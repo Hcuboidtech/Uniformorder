@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.uniformorder.uniformorderr">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:networkSecurityConfig="@xml/networksecurityconfig"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/FullScreen">
+        <activity
+            android:name=".activities.filteractivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Delivernow"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Orderllist"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Memberlist"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Addmember"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Patternlist"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Addschool"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Schoollist"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Changedetails"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Profile"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Quickorderforrm"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Changepassword"
+            android:exported="true" />
+        <activity
+            android:name=".activities.AddStd"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Addpattern"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Splashsrceen"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Signupactivity"
+            android:exported="true"
+            android:theme="@style/FullScreen"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:exported="true"
+            tools:ignore="Instantiatable" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+    </application>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE " />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
+</manifest>

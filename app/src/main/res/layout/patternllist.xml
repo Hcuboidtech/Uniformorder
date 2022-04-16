@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="@dimen/_5sdp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/schoolname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_toLeftOf="@+id/edit"
+                android:text="School Name"
+                android:textAllCaps="true"
+                android:textColor="@color/darkblue"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold" />
+
+
+            <ImageView
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_toLeftOf="@+id/delete"
+                android:src="@drawable/iconmaterialedit" />
+
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/iconmaterialdelete" />
+
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

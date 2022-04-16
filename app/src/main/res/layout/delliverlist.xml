@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/_260sdp"
+    android:layout_height="wrap_content">
+    <TableLayout
+        android:id="@+id/simpleTableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="5"
+        tools:ignore="MissingConstraints"> <!-- stretch the second column of the layout-->
+
+        <!-- first row of the table layout-->
+        <TableRow
+            android:id="@+id/firstRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- first element of the row-->
+            <TextView
+                android:id="@+id/simpleTextView"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tableborder"
+                android:padding="13dp"
+                android:layout_width="@dimen/_40sdp"
+                android:text="Std"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                tools:ignore="DuplicateIds" />
+
+            <TextView
+                android:id="@+id/simpleTextView1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tableborder"
+                android:padding="13dp"
+                android:layout_width="@dimen/_40sdp"
+                android:text="1111"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                tools:ignore="DuplicateIds" />
+
+            <TextView
+                android:id="@+id/simpleTextView3"
+                android:padding="13dp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tableborder"
+                android:text="Girls"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="15dp"/>
+
+            <TextView
+                android:id="@+id/simpleTextView2"
+                android:padding="13dp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tableborder"
+                android:text="Total"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="15dp"/>
+
+            <ImageView
+                android:id="@+id/simpleTextView4"
+                android:layout_height="@dimen/_35sdp"
+                android:padding="14dp"
+                android:layout_width="@dimen/_36sdp"
+                android:src="@drawable/iconmaterialedit"
+                android:textSize="15dp"/>
+
+
+        </TableRow>
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

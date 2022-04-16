@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Quickorderforrm">
+
+    <LinearLayout
+        android:id="@+id/lnMain1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_3sdp">
+
+
+                <ImageView
+                    android:id="@+id/img_back"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:padding="2dp"
+                    android:src="@drawable/back"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_horizontal"
+                    android:text="Quick Order Form"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_17sdp"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_15sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/_10sdp"
+                android:orientation="vertical"
+                android:padding="@dimen/_10sdp">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="SELECT SCHOOL"
+                        android:textColor="@color/darkblue"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/plusschool"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_toLeftOf="@+id/addtxtschool"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/_1sdp"
+                        android:src="@drawable/add"
+                        android:textColor="@color/darkblue" />
+
+                    <TextView
+                        android:id="@+id/addtxtschool"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical"
+                        android:text="Add"
+                        android:textColor="@color/darkblue"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlschoolname"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/editborder">
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/schoollspinner"
+                        android:layout_width="@dimen/_260sdp"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/_5sdp"
+                        android:spinnerMode="dropdown"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/schooltxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:backgroundTint="@color/darkblue"
+                        android:editable="false"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/_9sdp"
+                        android:textColor="@color/darkblue"
+                        android:textColorHint="@color/darkblue"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_15sdp"
+                        android:padding="@dimen/_5sdp"
+                        android:src="@drawable/downarrow"
+                        android:tintMode="@color/darkblue"
+                        tools:ignore="UseAppTint" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="SELECT PATTERN"
+                        android:textColor="@color/darkblue"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/pluspattern"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_toLeftOf="@+id/addtxtpattern"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/_1sdp"
+                        android:src="@drawable/add"
+                        android:textColor="@color/darkblue" />
+
+                    <TextView
+                        android:id="@+id/addtxtpattern"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical"
+                        android:text="Add"
+                        android:textColor="@color/darkblue"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlpatternname"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/editborder">
+
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/patternspinner"
+                        android:layout_width="@dimen/_260sdp"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/_5sdp"
+                        android:spinnerMode="dropdown"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/patterntxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:backgroundTint="@color/darkblue"
+                        android:editable="false"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/_9sdp"
+                        android:textColor="@color/darkblue"
+                        android:textColorHint="@color/darkblue"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_15sdp"
+                        android:padding="@dimen/_5sdp"
+                        android:src="@drawable/downarrow"
+                        android:tintMode="@color/darkblue"
+                        tools:ignore="UseAppTint" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/txttotalstdent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="TOTAL STUDENTS"
+                        android:textColor="@color/darkblue"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/plusstudent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_toLeftOf="@+id/addstd1"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/_1sdp"
+                        android:src="@drawable/add"
+                        android:textColor="@color/darkblue" />
+
+                    <TextView
+                        android:id="@+id/addstd1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center_vertical"
+                        android:text="Add"
+                        android:textColor="@color/darkblue"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_90sdp"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcyestd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_17sdp"
+                    android:text="RATE OF 1 TO 4 STUDENTS"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtrrate1"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/editborder"
+                    android:inputType="number"
+                    android:padding="@dimen/_9sdp"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="RATE OF 5 TO 8 STUDENTS"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtrrate2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/editborder"
+                    android:inputType="number"
+                    android:padding="@dimen/_9sdp"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/totalpayable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_11sdp"
+                    android:text="Total Payable amount"
+                    android:textColor="@color/purple_500"
+                    android:textSize="@dimen/_13sdp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="ADVANCED DEPOSIT"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtadvdeposit"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/editborder"
+                    android:inputType="number"
+                    android:padding="@dimen/_9sdp"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/placeorder"
+                    android:layout_width="@dimen/_200sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/buttonborder"
+                    android:text="Place Order"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_14sdp" />
+
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+
+    </LinearLayout>
+
+    <include layout="@layout/prossesbar" />
+</androidx.constraintlayout.widget.ConstraintLayout>

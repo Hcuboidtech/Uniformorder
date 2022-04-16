@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Addschool">
+
+
+    <include layout="@layout/prossesbar" />
+
+    <LinearLayout
+        android:id="@+id/lnMain1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_3sdp">
+
+
+                <ImageView
+                    android:id="@+id/img_back"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:padding="2dp"
+                    android:src="@drawable/back"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:text="Add New School"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_17sdp"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:orientation="vertical"
+                android:padding="@dimen/_10sdp">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="SCHOOL NAME"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtschoolname"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:background="@drawable/editborder"
+                    android:padding="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="PRINCIPAL NAME"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtprincipalname"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:background="@drawable/editborder"
+                    android:padding="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="ASSISTANT NAME"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtassiname"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:background="@drawable/editborder"
+                    android:padding="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="CITY/PLACE/VILLAGE"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtcityname"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:background="@drawable/editborder"
+                    android:padding="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="PAY CENTER"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtpayname"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:background="@drawable/editborder"
+                    android:padding="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="DISTRICT"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtdistrictname"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:background="@drawable/editborder"
+                    android:padding="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="MOBILE NUMBER 1"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtmobile1"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:background="@drawable/editborder"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:padding="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="MOBILE NUMBER 2"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/edtmobile2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:background="@drawable/editborder"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:padding="@dimen/_9sdp"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
+
+
+                <Button
+                    android:id="@+id/addschool"
+                    android:layout_width="@dimen/_200sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/buttonborder"
+                    android:text="Add"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_14sdp" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Profile">
+
+    <RelativeLayout
+        android:id="@+id/bglayyout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="MissingConstraints">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <ImageView
+                    android:id="@+id/img_back"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:padding="2dp"
+                    android:src="@drawable/back"
+                    android:visibility="visible" />
+
+
+            </RelativeLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circleprofileimg"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:layout_below="@+id/toolbar"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_9sdp"
+            android:src="@drawable/logo"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/txtname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/circleprofileimg"
+            android:gravity="center"
+            android:text="John Doe" />
+
+        <TextView
+            android:id="@+id/txtusertype"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtname"
+            android:gravity="center"
+            android:text="Your Role: Admin" />
+
+        <TextView
+            android:id="@+id/editprofile"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_below="@+id/txtusertype"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/editprofile"
+            android:gravity="center"
+            android:text=" Edit Profile "
+            android:textColor="@color/darkblue"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/changepass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editprofile"
+            android:layout_marginLeft="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:text="Change Password" />
+
+
+        <TextView
+            android:id="@+id/txtllogout"
+            android:layout_centerInParent="true"
+            android:background="@drawable/roundcorner"
+            android:layout_width="@dimen/_250sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_alignParentBottom="true"
+            android:letterSpacing=".1"
+            android:layout_marginBottom="@dimen/_90sdp"
+            android:gravity="center"
+            android:text="LOGOUT"
+            android:textStyle="bold"
+            android:textColor="@color/purple_500"
+            android:textSize="@dimen/_15sdp" />
+
+
+
+    </RelativeLayout>
+    <include layout="@layout/prossesbar"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
