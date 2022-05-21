@@ -112,6 +112,7 @@ public class Constants {
 
     public static String Terms_Service = "Please Accept Terms & Services ";
    public static ArrayList<SaveorderRequestdetails> cartlist = new ArrayList<>();
+    public static ArrayList<SaveorderRequestdetails>  editcardList = new ArrayList<>();
    public static ArrayList<Editorder> editcartlist = new ArrayList<>();
 
 

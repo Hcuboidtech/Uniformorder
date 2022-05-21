@@ -68,6 +68,7 @@
 
             <TextView
                 android:id="@+id/total"
+                android:layout_marginTop="@dimen/_3sdp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_10sdp"
@@ -76,19 +77,23 @@
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/pendingamout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_toRightOf="@+id/total"
-                android:text="pendingamout"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_11sdp"
-                android:textStyle="bold" />
-
         </RelativeLayout>
+           <LinearLayout
+               android:layout_marginLeft="@dimen/_10sdp"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+               <TextView
 
+                   android:layout_marginTop="@dimen/_3sdp"
+                   android:id="@+id/pendingamout"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_toRightOf="@+id/total"
+                   android:text="pendingamout"
+                   android:textColor="@color/black"
+                   android:textSize="@dimen/_11sdp"
+                   android:textStyle="bold" />
+           </LinearLayout>
         <LinearLayout
             android:layout_marginTop="@dimen/_10sdp"
             android:weightSum="1"
@@ -108,7 +113,7 @@
                 android:background="@drawable/button_border_black"
                 android:gravity="center_vertical|center_horizontal"
                 android:padding="@dimen/_3sdp"
-                android:text="Deliver Now"
+                android:text="Deliver"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp" />

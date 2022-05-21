@@ -105,6 +105,8 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
         linearLayoutManager = new LinearLayoutManager(getContext());
         recylceorderlist.setLayoutManager(linearLayoutManager);
         recylceorderlist.setAdapter(profilelistadapter);
+        recylceorderlist.getRecycledViewPool().clear();
+        profilelistadapter.notifyDataSetChanged();
 
         edtsearch = view.findViewById(R.id.edtsearch);
         // Inflate the layout for this fragment
@@ -147,6 +149,7 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
         showHideProgressDialog(true);
 
         APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
+        Log.d("DXX ->",strsearch);
         Call<Orderlistmodel> userlist = apiInterface.orderlist(loginid, "pending", strsearch);
         userlist.enqueue(new Callback<Orderlistmodel>() {
             @Override
@@ -214,6 +217,11 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
     public void onClick(String position) {
         Log.d("Pending",String.valueOf(position));
         callDeleteApi(position);
+    }
+
+    @Override
+    public void onItemSend() {
+
     }
 
     void callDeleteApi(String position){

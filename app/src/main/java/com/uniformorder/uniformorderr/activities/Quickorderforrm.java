@@ -1,9 +1,11 @@
 package com.uniformorder.uniformorderr.activities;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +25,7 @@ import com.uniformorder.uniformorderr.adapter.Addstdadapter;
 import com.uniformorder.uniformorderr.adapter.CommonListBottomSheet;
 import com.uniformorder.uniformorderr.adapter.Countryadapter;
 import com.uniformorder.uniformorderr.adapter.patternadapter;
+import com.uniformorder.uniformorderr.model.EditOrderResponse;
 import com.uniformorder.uniformorderr.model.SaveorderRequestdetails;
 import com.uniformorder.uniformorderr.model.Schoollistdetails;
 import com.uniformorder.uniformorderr.model.Schoollistmodel;
@@ -44,8 +47,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadapter.OnItemSelecteListener {
+
+   public EditOrderListViewModel editOrderViewModel;
+    int count = 2;  /// custom value
+    SharedPreferences sharedPreferenceUtils;
+    SharedPreferences.Editor myEdit;
+    Intent parcebelCheck;
     Bundle intent;
-    String principal_Name,school_Name,order_id;
+    String principal_Name,school_Name,order_id,school_Id,patternName;
     TextView edtschoolname, edtpatternname;
     TextView addtxtpattern, addstd1, addtxtschool;
     TextView schooltxt, patterntxt;
@@ -96,7 +105,12 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPreferenceUtils = getSharedPreferences("Mypref",MODE_PRIVATE);
+        myEdit = sharedPreferenceUtils.edit();
+        parcebelCheck = getIntent();
         //    setContentView(R.layout.activity_quickorderforrm);
+        editOrderViewModel = new ViewModelProvider(this).get(EditOrderListViewModel.class);
         edtschoolname = findViewById(R.id.edtschoolname);
         edtpatternname = findViewById(R.id.edtpatternname);
         addtxtschool = findViewById(R.id.addtxtschool);
@@ -138,20 +152,151 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
 
         if (intent != null) {
                   String sklanem = intent.getString("SchoolName","Q");
-                  if ( !sklanem.equals("Q")){
-            if (intent.getString("isEdit").equals("order")){
+        if ( !sklanem.equals("Q")){
+
+        if (intent.getString("isEdit").equals("order")){
+
+        if (parcebelCheck.hasExtra("EditData")) {
+                Constants.editcardList = getIntent().getParcelableArrayListExtra("EditData");
+                ArrayList<SaveorderRequestdetails> list = Constants.editcardList;
+                Log.d("FETCEDH BYS",list.get(0).getBoys().toString());
+                String order_idp,schhool_idp, login_idp, pattern_idp, rate1p, rate2p, total_amountp, depositep,patternnamep;
+
+                patternnamep = intent.getString("PatternName","n");
+                Log.d("PatternRecived->",patternnamep);
+                patternName = patternnamep;
+                order_idp = intent.getString("orderId","n");
+                schhool_idp = intent.getString("idSchool", "n");
+                login_idp = intent.getString("loginId", "n");
+                pattern_idp = intent.getString("idpattern", "n");
+                rate1p = intent.getString("rate1", "n");
+                rate2p = intent.getString("rate2", "n");
+                total_amountp = intent.getString("totalam", "n");
+                depositep = intent.getString("deposite", "n");
+                editOrderViewModel.savePrcebleObj(list);
+                editOrderViewModel.saveData(order_idp,schhool_idp, login_idp, pattern_idp, rate1p, rate2p, total_amountp, depositep);
+
+                myEdit.putString("orderid",order_idp);
+                myEdit.putString("schoolid",schhool_idp);
+                myEdit.putString("loginid",login_idp);
+                myEdit.putString("patternid",pattern_idp);
+                myEdit.putString("rate1",rate1p);
+                myEdit.putString("rate2",rate2p);
+                myEdit.putString("totalam",total_amountp);
+                myEdit.putString("deposite",depositep);
+                myEdit.apply();
+
+                  edtrrate1.setText(String.valueOf((int)Double.parseDouble(rate1p)));
+                  edtrrate2.setText(String.valueOf((int)Double.parseDouble(rate2p)));
+                  edtadvdeposit.setText(String.valueOf((int)Double.parseDouble(depositep)));
+                  total_amountp =String.valueOf((int)Double.parseDouble(total_amountp));
+                  totalrate = (int)Double.parseDouble(total_amountp);
+
+                  placeorder.setText("Update Order");
+                  totalpayable.setText("Total Payable amount : " + total_amountp + " INR");
+
+
+                ////adding the card list
+
+                Log.d("Receive ->","Parcel");
+
+                Constants.editcardList = getIntent().getParcelableArrayListExtra("EditData");
+
+                for (int i = 0; i < Constants.editcardList.size(); i++) {
+                    std.add(Constants.editcardList.get(i).getStandard());
+                    boys.add(Constants.editcardList.get(i).getBoys());
+                    girls.add(Constants.editcardList.get(i).getGirls());
+
+                    if (Constants.editcardList.get(i).getStandard() <= 4) {
+
+                        int boysGrildTotal = Constants.editcardList.get(i).getBoys()
+                                + Constants.editcardList.get(i).getGirls();
+                        total1to4 = total1to4 + boysGrildTotal;
+
+                        Log.d("totall14", String.valueOf(total1to4));
+                    } else {
+
+                        int boysGrildTotal = Constants.editcardList.get(i).getBoys()
+                                + Constants.editcardList.get(i).getGirls();
+                        total5to8 = total5to8 + boysGrildTotal;
+
+                        Log.d("totall58", String.valueOf(total5to8));
+                    }
+
+
+                    Log.d("totall14", String.valueOf(total1to4));
+                    Log.d("totall58", String.valueOf(total5to8));
+
+                }
+
+                cartlistAdapter = new Addstdadapter(Constants.editcardList,"isEdit");
+                cartlayout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+                rcyestd.setLayoutManager(cartlayout);
+                rcyestd.setAdapter(cartlistAdapter);
+                rcyestd.setItemAnimator(null);
+                cartlistAdapter.setOnItemClickLister(this);
+                //cartlistAdapter.notifyItemRemoved();
+                cartlistAdapter.notifyDataSetChanged();
+
+        }
+               /// after retuning from Adstd As -> Edit Order //
                  principal_Name  = intent.getString("principalName");
                  school_Name = intent.getString("SchoolName");
                  school_id = intent.getString("SchoolId");
                  addtxtschool.setVisibility(View.INVISIBLE);
                  plusschool.setVisibility(View.INVISIBLE);
+                 pluspattern.setVisibility(View.INVISIBLE);
+                 addtxtpattern.setVisibility(View.INVISIBLE);
                  schooltxt.setText(school_Name);
+                 if ( parcebelCheck.hasExtra("saveorderRequest1") &&
+                         intent.getString("isEditA","n").equals("Added")){
+                     Log.d("YES _>>>","ADDED");
+
+                     placeorder.setText("Update Order");
+                     Constants.cartlist = getIntent().getParcelableArrayListExtra("saveorderRequest1");
+
+                     for (int i = 0; i < Constants.cartlist.size(); i++) {
+                         std.add(Constants.cartlist.get(i).getStandard());
+                         boys.add(Constants.cartlist.get(i).getBoys());
+                         girls.add(Constants.cartlist.get(i).getGirls());
+                         if (Constants.cartlist.get(i).getStandard() <= 4) {
+                             int boysGrildTotal = Constants.cartlist.get(i).getBoys() + Constants.cartlist.get(i).getGirls();
+                             total1to4 = total1to4 + boysGrildTotal;
+                             Log.d("totall14", String.valueOf(total1to4));
+                         } else {
+                             int boysGrildTotal = Constants.cartlist.get(i).getBoys() + Constants.cartlist.get(i).getGirls();
+                             total5to8 = total5to8 + boysGrildTotal;
+                             Log.d("totall58", String.valueOf(total5to8));
+                         }
+                         Log.d("totall14", String.valueOf(total1to4));
+                         Log.d("totall58", String.valueOf(total5to8));
+                     }
+                     Constants.editcardList = Constants.cartlist;
+                     cartlistAdapter = new Addstdadapter(Constants.editcardList, "isEdit");
+                     cartlayout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+                     rcyestd.setLayoutManager(cartlayout);
+                     rcyestd.setAdapter(cartlistAdapter);
+                     cartlistAdapter.setOnItemClickLister(this);
+                     cartlistAdapter.notifyDataSetChanged();
+
+                     edtrrate1.setText(String.valueOf((int)Double.parseDouble(sharedPreferenceUtils.getString("rate1","0"))));
+                     edtrrate2.setText(String.valueOf((int)Double.parseDouble(sharedPreferenceUtils.getString("rate2","0"))));
+                     edtadvdeposit.setText(String.valueOf((int)Double.parseDouble(sharedPreferenceUtils.getString("deposite","0"))));
+                     String total_amountp =String.valueOf((int)Double.parseDouble(sharedPreferenceUtils.getString("totalam","0")));
+                     totalrate = (int)Double.parseDouble(total_amountp);
+                     placeorder.setText("Update Order");
+                     totalpayable.setText("Total Payable amount : " + total_amountp + " INR");
+
+
+                 }
             }
-            }else{
+            }   ////   End Of Had SCHOOL NAME  //
+                  else{
+                       /// this used for the New Order  ///
+                      ///  NEW ORDER BLOCK   ///
                 Constants.cartlist = getIntent().getParcelableArrayListExtra("saveorderRequest");
                 for (int i = 0; i < Constants.cartlist.size(); i++) {
                     std.add(Constants.cartlist.get(i).getStandard());
-                    boys.add(Constants.cartlist.get(i).getBoys());
                     boys.add(Constants.cartlist.get(i).getBoys());
                     girls.add(Constants.cartlist.get(i).getGirls());
 
@@ -168,29 +313,39 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
 
                         Log.d("totall58", String.valueOf(total5to8));
                     }
-
-
                     Log.d("totall14", String.valueOf(total1to4));
                     Log.d("totall58", String.valueOf(total5to8));
-
                 }
-
-                cartlistAdapter = new Addstdadapter(Constants.cartlist);
+                cartlistAdapter = new Addstdadapter(Constants.cartlist, "isFrom");
                 cartlayout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
                 rcyestd.setLayoutManager(cartlayout);
                 rcyestd.setAdapter(cartlistAdapter);
+                cartlistAdapter.notifyDataSetChanged();
                 cartlistAdapter.setOnItemClickLister(this);
-            }
+            }      ///    END OF NEW ORDER BLOCK
         }
         else {
 
         }
-
         placeorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (totalrate > Integer.parseInt(edtadvdeposit.getText().toString().trim())) {
-                    placeordercall();
+                    Log.d("Count1 ->",String.valueOf(count));
+                    if (placeorder.getText().equals("Update Order")){
+                        Log.d("Count2 ->",String.valueOf(count));
+                        if (count <= 0){
+                            Toast.makeText(mBaseAppCompatActivity, "Please Add one Standard", Toast.LENGTH_SHORT).show();
+                            Log.d("Editing Failed","Adapter List Is Empty");
+                        }else{
+                             editorderApi();
+                        }
+                    }else{
+                       placeordercall();
+                    }
+                    Log.d("totalrate ->",String.valueOf(totalrate));
+                    Log.d("editDeposite",edtadvdeposit.getText().toString().trim());
                 } else {
                     Toast.makeText(mBaseAppCompatActivity, "Advance deposit should be less than total payable amount.", Toast.LENGTH_SHORT).show();
                 }
@@ -219,7 +374,19 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         addstd1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Quickorderforrm.this, AddStd.class));
+           Intent intent2 = new Intent(Quickorderforrm.this, AddStd.class);
+           if (intent != null) {
+               String name = intent.getString("SchoolName", "Z");
+               Log.d("SchoolnmPasstoAddStd ->",name);
+               if (intent != null && !name.equals("Z")) {
+                   intent2.putExtra("order", name);
+                   intent2.putExtra("PatternName",patternName);
+                   intent2.putParcelableArrayListExtra("Addsonstd",Constants.editcardList);
+               }
+           }
+                startActivity(intent2);
+                finish();
+
             }
         });
 
@@ -227,6 +394,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Quickorderforrm.this, AddStd.class));
+                finish();
             }
         });
 
@@ -369,8 +537,102 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         return R.layout.activity_quickorderforrm;
     }
 
+    private void editorderApi() {
+        Log.d("Editor Api called","Called");
+        LinkedHashMap<String, RequestBody> update = new LinkedHashMap<String, RequestBody>();
+
+        String data =sharedPreferenceUtils.getString("orderid","n");
+        Log.d("DCX",data);
+  //  ArrayList<String> fetched = editOrderViewModel.returnData();
+        // if (fetched !=null) {
+             deposite = edtadvdeposit.getText().toString();
+             //  String depositevm =editOrderViewModel.deposite;
+         //  String data = String.valueOf(fetched.get(0));
+             String depositevm = edtadvdeposit.getText().toString();
+             String loginidvm = sharedPreferenceUtils.getString("loginid","n");
+             String totalamvm = sharedPreferenceUtils.getString("totalam","n")
+             ;
+             String orderidvm =sharedPreferenceUtils.getString("orderid","n");
+             String rate1vm = sharedPreferenceUtils.getString("rate1","n");
+             String rate2vm =  sharedPreferenceUtils.getString("rate2","n");
+             String schoolIdvm = sharedPreferenceUtils.getString("schoolid","n");
+             String patterIdvm = sharedPreferenceUtils.getString("patternid","n");
+             ;
+             // Log.d("order id_server",orderidvm);
+
+             ArrayList<SaveorderRequestdetails> viewModel_list = editOrderViewModel.edit_saveOrder;
+//        for (int i = 0; i < viewModel_list.size(); i++) {
+//            std.add(viewModel_list.get(i).getStandard());
+//            boys.add(viewModel_list.get(i).getBoys());
+//            girls.add(viewModel_list.get(i).getGirls());
+//
+//            if (viewModel_list.get(i).getStandard() <= 4) {
+//
+//                int boysGrildTotal = viewModel_list.get(i).getBoys() + viewModel_list.get(i).getGirls();
+//                total1to4 = total1to4 + boysGrildTotal;
+//
+//                Log.d("totall14", String.valueOf(total1to4));
+//            } else {
+//
+//                int boysGrildTotal = viewModel_list.get(i).getBoys() + viewModel_list.get(i).getGirls();
+//                total5to8 = total5to8 + boysGrildTotal;
+//
+//                Log.d("totall58", String.valueOf(total5to8));
+//            }
+//
+//
+//            Log.d("totall14", String.valueOf(total1to4));
+//            Log.d("totall58", String.valueOf(total5to8));
+//
+//        }
+
+             update.put("order_id", RequestBody.create(MediaType.parse("multipart/form-data"), orderidvm));
+
+             update.put("login_id", RequestBody.create(MediaType.parse("multipart/form-data"), loginidvm));
+
+             update.put("school_id", RequestBody.create(MediaType.parse("multipart/form-data"), schoolIdvm));
+             update.put("pattern_id", RequestBody.create(MediaType.parse("multipart/form-data"), patterIdvm));
+             update.put("rate1", RequestBody.create(MediaType.parse("multipart/form-data"), rate1vm));
+             update.put("rate2", RequestBody.create(MediaType.parse("multipart/form-data"), rate2vm));
+             update.put("total_amount", RequestBody.create(MediaType.parse("multipart/form-data"), totalamvm));
+             update.put("deposite", RequestBody.create(MediaType.parse("multipart/form-data"), depositevm));
+             Log.d("rate ->", rate1.toString());
+
+             Log.d("PassedRate1->",rate1vm);
+             Log.d("PassedRate2->",rate2vm);
+
+             APIInterface apiInterface = APIClient.getClient(this).create(APIInterface.class);
+             Call<EditOrderResponse> updateOrder = apiInterface.editOrderForUpdate(update, std, boys, girls);
+             updateOrder.enqueue(new Callback<EditOrderResponse>() {
+                 @Override
+                 public void onResponse(Call<EditOrderResponse> call, Response<EditOrderResponse> response) {
+                     if (response.isSuccessful()) {
+                         Log.d("Update SuccessFull", "UpdateOrder");
+                         myEdit.clear();
+                         myEdit.commit();
+                         myEdit.apply();
+                         startActivity(new Intent(Quickorderforrm.this,Orderllist.class));
+                         finish();
+                     }
+                 }
+
+                 @Override
+                 public void onFailure(Call<EditOrderResponse> call, Throwable t) {
+                     Log.d("Update Failed", "Failed");
+                     Log.d("Update Failed", t.getMessage().toString());
+                   myEdit.clear();
+                   myEdit.commit();
+                   myEdit.apply();
+                 }
+             });
+
+//       /  }else{
+//             Log.d("List is NUll","NUl");
+//         }
+    }
     private void placeordercall() {
         showHideProgressDialog(true);
+        Log.d("Place","Called");
         login_id = UserPreference.getInstance(this).getLoginId();
         school_id = selectschoolid;
         pattern_id = selectpatternid;
@@ -462,6 +724,12 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         txttotalstdent.setText("TOTAL STUDENTS " + alltotal);
     }
 
+    @Override
+    public void checkListisEmpty(int value) {
+         Log.d("Value",String.valueOf(value));
+        count = value;
+    }
+
 
     private void schoollist() {
         //  loginid=UserPreference.getInstance(getContext()).getLoginId();
@@ -484,8 +752,9 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                                 }
                                 mListData.addAll(response.body().getData());
                                 ///  handle quick order  as intent is null //
-                                   if (intent !=null && !intent.getString("SchoolName","Q").equals("Q")) {
+                                   if (intent !=null && !intent.getString("SchoolName","Q").equals("Q") || parcebelCheck.hasExtra("EditData")) {
                                        if (intent != null && intent.getString("isEdit").equals("order")) {
+
                                            //// removing the adapter  ///
                                           // value is from orderAdapter
                                        }
@@ -531,6 +800,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
             @Override
             public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
                 //    hideSwipeRefreshView();
+                String df ="";
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         if (response.body().getStatus().toString().equals("true")) {
@@ -543,8 +813,20 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                                 patterndata.addAll(response.body().getData());
                                 patternadapter customAdapter = new patternadapter(Quickorderforrm.this, R.layout.spinnerlayout1, patterndata);
                                 if (patternspinner != null) {
-                                    patternspinner.setAdapter(customAdapter);
-                                }
+                                    if (intent !=null && !intent.getString("SchoolName","Q").equals("Q")
+                                            || parcebelCheck.hasExtra("EditData")) {
+                                        if (intent != null && intent.getString("isEdit").equals("order")) {
+                                             df = intent.getString("PatternName","n");
+                                            Log.d("DF ->",df.toString());
+                                            patterntxt.setText(df);
+                                        Log.d("Pattern->>>>",intent.getString("PatternName"));
+                                        }
+                                    }else{
+
+                                        patternspinner.setAdapter(customAdapter);
+                                    }
+
+                                        }
                             }
                         } else {
                             showHideProgressDialog(false);

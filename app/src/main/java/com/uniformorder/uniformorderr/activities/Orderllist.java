@@ -24,7 +24,7 @@ import com.uniformorder.uniformorderr.fragment.Pendingorder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Orderllist extends BaseAppCompatActivity implements OnItemClicked {
+public class Orderllist extends BaseAppCompatActivity{
     private TabLayout tabLayout;
     private ViewPager viewPager;
     ImageView img_back, filter;
@@ -86,11 +86,6 @@ public class Orderllist extends BaseAppCompatActivity implements OnItemClicked {
       //  adapter.notifyDataSetChanged();
         viewPager.setAdapter(adapter);
 
-    }
-
-    @Override
-    public void onClick(String position) {
-        Log.d("Interface ->",String.valueOf(position));
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

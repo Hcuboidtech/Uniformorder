@@ -2,25 +2,18 @@ package com.uniformorder.uniformorderr.retrofit;
 
 import com.uniformorder.uniformorderr.model.Dashboardmodell;
 import com.uniformorder.uniformorderr.model.DeleteOrder;
-import com.uniformorder.uniformorderr.model.EditOrderDetails;
+import com.uniformorder.uniformorderr.model.EditOrderResponse;
 import com.uniformorder.uniformorderr.model.Membermodel;
 import com.uniformorder.uniformorderr.model.Orderlistmodel;
 import com.uniformorder.uniformorderr.model.Registermodel;
-import com.uniformorder.uniformorderr.model.Saveorder;
-import com.uniformorder.uniformorderr.model.SaveorderRequestdetails;
 import com.uniformorder.uniformorderr.model.Schoollistmodel;
 import com.uniformorder.uniformorderr.model.filtermodel;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
@@ -169,6 +162,7 @@ public interface APIInterface {
     Call<Dashboardmodell> dashboardcalll(@Field("login_id") String login_id);
 
 
+
     @Multipart
     @POST("order/add")
     Call<Schoollistmodel> addorder(@PartMap() Map<String, RequestBody> partMap,
@@ -186,14 +180,15 @@ public interface APIInterface {
                                     @Part("girls[]") List<Integer> saveorderRequestdetails3);
 
 
+
     @FormUrlEncoded
     @POST("order/delete")
     Call<DeleteOrder> deleteOrder(@Field("order_id") String id);
 
     @Multipart
-    @POST("order/edit")
-    Call<DeleteOrder> editOrderForUpdate(@PartMap() Map<String, RequestBody> partMap,
-                   @Part("standards[]")List<Integer> standard,
-                   @Part("boys[]")List<Integer>boys,
-                   @Part("girls[]")List<Integer>girls);
+    @POST("order/update")
+    Call<EditOrderResponse> editOrderForUpdate(@PartMap() Map<String, RequestBody> partMap,
+                                               @Part("standards[]")List<Integer> standard,
+                                               @Part("boys[]")List<Integer>boys,
+                                               @Part("girls[]")List<Integer>girls);
 }

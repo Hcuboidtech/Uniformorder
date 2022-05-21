@@ -215,4 +215,9 @@ public class Completed extends BaseFragment implements OnItemClicked {
     public void onClick(String position) {
              Log.d("Completed ->",String.valueOf(position));
     }
+
+    @Override
+    public void onItemSend() {
+
+    }
 }

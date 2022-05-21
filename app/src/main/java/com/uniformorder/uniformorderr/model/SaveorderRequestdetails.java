@@ -3,12 +3,10 @@ package com.uniformorder.uniformorderr.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SaveorderRequestdetails implements Parcelable {
     Integer standard;
     Integer boys;
+    Integer girls;
 
     public SaveorderRequestdetails() {
 
@@ -38,7 +36,6 @@ public class SaveorderRequestdetails implements Parcelable {
         this.girls = girls;
     }
 
-    Integer girls;
 
 
     public SaveorderRequestdetails(Parcel in) {

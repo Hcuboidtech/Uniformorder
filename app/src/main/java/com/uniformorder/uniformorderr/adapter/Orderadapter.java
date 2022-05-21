@@ -1,5 +1,6 @@
 package com.uniformorder.uniformorderr.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,12 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uniformorder.uniformorderr.R;
+import com.uniformorder.uniformorderr.activities.Constants;
 import com.uniformorder.uniformorderr.activities.Delivernow;
 import com.uniformorder.uniformorderr.activities.OnItemClicked;
+import com.uniformorder.uniformorderr.activities.PassedStandard;
 import com.uniformorder.uniformorderr.activities.Quickorderforrm;
 import com.uniformorder.uniformorderr.activities.UserPreference;
 import com.uniformorder.uniformorderr.model.Memberdetails;
 import com.uniformorder.uniformorderr.model.Orderlistdetails;
+import com.uniformorder.uniformorderr.model.SaveorderRequestdetails;
 import com.uniformorder.uniformorderr.model.Standard;
 
 import java.text.DateFormat;
@@ -32,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder>  {
+public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> implements PassedStandard {
 
     public OnItemClicked onItemClicked;
 
@@ -55,7 +58,7 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Orderadapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull Orderadapter.ViewHolder holder,int position) {
         final Orderlistdetails listdetails = profilelist.get(position);
         String ordder= UserPreference.getInstance(context).getpayment_pending();
         Log.d("Orderadapter",ordder);
@@ -76,26 +79,94 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
             @Override
             public void onClick(View v) {
 
+          SaveorderRequestdetails saveorderRequestdetails = new SaveorderRequestdetails();
+          List<SaveorderRequestdetails>saveorderReqlist = new ArrayList<>();
+
                 Intent intent = new Intent(context, Quickorderforrm.class);
                 intent.putExtra("isEdit","order");
+                intent.putExtra("PatternName",profilelist.get(position).getPatternName());
                 intent.putExtra("details",profilelist.get(position));
                 intent.putExtra("principalName",profilelist.get(position).getPrincipalName());
                 intent.putExtra("SchoolName",profilelist.get(position).getSchoolsName());
-                intent.putExtra("C",profilelist.get(position).getId());
-                Log.d("SchoolId",profilelist.get(position).getSchoolId());
-                Log.d("pattern",profilelist.get(position).getPatternId());
-              //  Log.d("pattern",profilelist.get(position).getStandards());
-                 List<Standard> list = profilelist.get(position).getStandards();
-                //   Log.d("List",list.get(position).getBoys());
-                context.startActivity(intent);
+                intent.putExtra("id",profilelist.get(position).getId());
+                intent.putExtra("idSchool",profilelist.get(position).getSchoolId());
+                intent.putExtra("loginId",profilelist.get(position).getLoginId());
+                intent.putExtra("idpattern",profilelist.get(position).getPatternId());
+                intent.putExtra("orderId",profilelist.get(position).getId());
+                intent.putExtra("schoolName",profilelist.get(position).getSchoolsName());
+                intent.putExtra("rate1",profilelist.get(position).getRate1());
+                intent.putExtra("rate2",profilelist.get(position).getRate2());
+                intent.putExtra("totalam",profilelist.get(position).getTotalAmount());
+                intent.putExtra("deposite",profilelist.get(position).getDeposite());
+
+                Log.d("SchoolName",profilelist.get(position).getSchoolsName());
+                Log.d("TotalAmount",profilelist.get(position).getTotalAmount());
+                Log.d("IDSchool",profilelist.get(position).getSchoolId());
+                Log.d("LoginId",profilelist.get(position).getLoginId());
+                Log.d("IDpattern",profilelist.get(position).getPatternId());
+                Log.d("PatternName",profilelist.get(position).getPatternName());
+                List<Standard> list = profilelist.get(position).getStandards();
+                Log.d("OrderId ->",profilelist.get(position).getId());
+                Log.d("SchoolName ->",profilelist.get(position).getSchoolsName());
                 Toast.makeText(context, "Edit", Toast.LENGTH_SHORT).show();
+                // passing the standards //
+
+                for (int i =0; i<list.size(); i++){
+                     saveorderRequestdetails = new SaveorderRequestdetails();
+                     saveorderRequestdetails.setStandard(Integer.parseInt(list.get(i).getStandard()));
+                     saveorderRequestdetails.setBoys(Integer.parseInt(list.get(i).getBoys()));
+                     saveorderRequestdetails.setGirls(Integer.parseInt(list.get(i).getGirls()));
+                     saveorderReqlist.add(i,saveorderRequestdetails);
+
+                    Log.d("XXStandard",list.get(i).getStandard());
+                    Log.d("XX Boys",list.get(i).getBoys());
+                    Log.d("XX Girls",list.get(i).getGirls());
+
+                 }
+                 for (int i =0; i<saveorderReqlist.size();i++){
+                     Log.d("XD ->",saveorderReqlist.get(i).getStandard().toString());
+                 }
+
+                if (Constants.editcardList != null) {
+                    for (int i =0; i<saveorderReqlist.size();i++) {
+                       Constants.editcardList.add(saveorderReqlist.get(i));
+                        Log.d("ThisXXO ->", "XO");
+                    }
+                }
+                for (int i =0; i<Constants.editcardList.size(); i++){
+
+                   Log.d("PASSED_STANDARD->",Constants.editcardList.get(i).getStandard().toString());
+                }
+
+                // passing the EditData list  //
+                 intent.putParcelableArrayListExtra("EditData",Constants.editcardList);
+                 context.startActivity(intent);
+                 ((Activity)context).finish();
+                 //  list.get(position).
+                //   list.get()
+                //        order_id, login_id, school_id,
+//        pattern_id, rate1, rate2, total_amount,
+//        deposite, standards[], boys[], girls[]
+
+//                 saveorderRequestdetails.setBoys();
+               //    saveorderRequestdetails.setBoys(Integer.parseInt(list.get(i).getBoys()));
+    // onItemClicked.onItemSend(profilelist.get(position).getId(),profilelist.get(position).getSchoolId());
+//                        profilelist.get(position).getLoginId(),profilelist.get(position).getPatternId(),
+//                        profilelist.get(position).getRate1(),profilelist.get(position).getRate2(),
+//                        profilelist.get(position).getTotalAmount(),
+//                        profilelist.get(position).getStandards(),);
+
+              //
+
+
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                  profilelist.remove(position);
-                 notifyItemRemoved(position);
+                 notifyItemChanged(holder.getAdapterPosition());
+                 notifyItemRangeChanged(holder.getAdapterPosition(),profilelist.size());
                Log.d("ID_ADP ->",String.valueOf(listdetails.getId()));
                // Toast.makeText(context, String.valueOf(position), Toast.LENGTH_SHORT).show();
                onItemClicked.onClick(listdetails.getId());
@@ -133,7 +204,12 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
         holder.date.setText("Created at: "+ listdetails.getOrderDate());
         holder.schoolname.setText("School Name: "+listdetails.getSchoolsName());
         holder.principalname.setText("Principal Name: "+listdetails.getPrincipalName());
-        holder.total.setText("Total: "+listdetails.getTotalAmount());
+
+        Double d = Double.valueOf(listdetails.getTotalAmount());
+        int i = d.intValue();
+        String amount = String.valueOf(i);
+        Log.d("INTEGER",String.valueOf(i));
+        holder.total.setText("Total: "+amount);
         holder.pendingamout.setText("Pending: "+listdetails.getPendingAmount());
     }
 
@@ -151,6 +227,11 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
 
     }
 
+    @Override
+    public void passesStd(SaveorderRequestdetails saveorderRequestdetails,int position) {
+        Constants.editcardList.add(position,saveorderRequestdetails);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView orderid,date,schoolname,principalname,total,pendingamout;
         TextView paynow,delete,edit;
@@ -165,6 +246,10 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
             paynow=itemView.findViewById(R.id.paynow);
             edit = itemView.findViewById(R.id.edit_btn);
             delete = itemView.findViewById(R.id.delete_btn);
+        }
+
+        void passedStd(){
+
         }
 
         @Override
