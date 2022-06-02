@@ -105,7 +105,117 @@
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text="DISTRICT"
+                android:textColor="@color/darkblue"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="bold" />
 
+
+            <RelativeLayout
+                android:id="@+id/rldistrictSelect"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+
+                android:background="@drawable/editborder">
+
+                <com.uniformorder.uniformorderr.model.NDSpinner
+                    android:id="@+id/districtSpinner"
+                    android:layout_width="@dimen/_260sdp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_5sdp"
+                    android:spinnerMode="dropdown"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/district_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:backgroundTint="@color/darkblue"
+                    android:editable="false"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/_9sdp"
+                    android:textColor="@color/darkblue"
+                    android:textColorHint="@color/darkblue"
+                    android:textSize="@dimen/_13sdp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginRight="@dimen/_15sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/downarrow"
+                    android:tintMode="@color/darkblue"
+                    tools:ignore="UseAppTint" />
+
+            </RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text="PAYING CENTER"
+                android:textColor="@color/darkblue"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="bold" />
+
+
+            <RelativeLayout
+                android:id="@+id/rlPayingCenter"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:background="@drawable/editborder">
+
+                <com.uniformorder.uniformorderr.model.NDSpinner
+                    android:id="@+id/paycenterSpinner"
+                    android:layout_width="@dimen/_260sdp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_5sdp"
+                    android:spinnerMode="dropdown"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/paycentrename_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:backgroundTint="@color/darkblue"
+                    android:editable="false"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/_9sdp"
+                    android:textColor="@color/darkblue"
+                    android:textColorHint="@color/darkblue"
+                    android:textSize="@dimen/_13sdp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginRight="@dimen/_15sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/downarrow"
+                    android:tintMode="@color/darkblue"
+                    tools:ignore="UseAppTint" />
+
+            </RelativeLayout>
             <Button
                 android:id="@+id/btnDownload"
                 android:layout_width="@dimen/_200sdp"

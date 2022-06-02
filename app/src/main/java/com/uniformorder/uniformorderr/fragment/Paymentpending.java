@@ -23,6 +23,8 @@ import com.uniformorder.uniformorderr.model.Orderlistdetails;
 import com.uniformorder.uniformorderr.model.Orderlistmodel;
 import com.uniformorder.uniformorderr.retrofit.APIClient;
 import com.uniformorder.uniformorderr.retrofit.APIInterface;
+import com.uniformorder.uniformorderr.testModel.DataItem;
+import com.uniformorder.uniformorderr.testModel.ResponseOrderList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +54,7 @@ public class Paymentpending extends BaseFragment implements OnItemClicked {
     private String mParam2;
 
     Orderadapter profilelistadapter;
-    List<Orderlistdetails> schoollistdetails = new ArrayList<>();
+    List<DataItem> schoollistdetails = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
     RecyclerView recylceorderlist;
     String strsearch = " ";
@@ -98,7 +100,7 @@ public class Paymentpending extends BaseFragment implements OnItemClicked {
 
         UserPreference.getInstance(getContext()).setpayment_pending("payment_pending");
 
-        profilelistadapter = new Orderadapter(getContext(),this);
+        profilelistadapter = new Orderadapter(getContext(),this,"");
         linearLayoutManager = new LinearLayoutManager(getContext());
         recylceorderlist.setLayoutManager(linearLayoutManager);
         edtsearch = view.findViewById(R.id.edtsearch);
@@ -153,15 +155,15 @@ public class Paymentpending extends BaseFragment implements OnItemClicked {
         showHideProgressDialog(true);
 
         APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
-        Call<Orderlistmodel> userlist = apiInterface.orderlist(loginid, "payment_pending", strsearch);
-        userlist.enqueue(new Callback<Orderlistmodel>() {
+        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "payment_pending", strsearch);
+        userlist.enqueue(new Callback<ResponseOrderList>() {
             @Override
-            public void onResponse(Call<Orderlistmodel> call, Response<Orderlistmodel> response) {
+            public void onResponse(Call<ResponseOrderList> call, Response<ResponseOrderList> response) {
                 UserPreference.getInstance(getContext()).setpayment_pending("payment_pending");
                 //   hideSwipeRefreshView();
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        if (response.body().getStatus().toString().equals("true")) {
+                        if (response.body().isStatus()) {
                             showHideProgressDialog(false);
                             recylceorderlist.setVisibility(View.VISIBLE);
 
@@ -210,7 +212,7 @@ public class Paymentpending extends BaseFragment implements OnItemClicked {
             }
 
             @Override
-            public void onFailure(Call<Orderlistmodel> call, Throwable t) {
+            public void onFailure(Call<ResponseOrderList> call, Throwable t) {
                 //  isLastPage = true;
                 hideProgressDialog();
                 //hideSwipeRefreshView();

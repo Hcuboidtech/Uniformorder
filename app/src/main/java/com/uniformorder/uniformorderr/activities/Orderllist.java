@@ -1,6 +1,5 @@
 package com.uniformorder.uniformorderr.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -8,11 +7,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+
 import android.widget.ImageView;
 
 import com.google.android.material.tabs.TabLayout;
@@ -26,8 +23,10 @@ import java.util.List;
 
 public class Orderllist extends BaseAppCompatActivity{
     private TabLayout tabLayout;
+    ViewPagerAdapter adapter;
     private ViewPager viewPager;
     ImageView img_back, filter;
+    private String checkCompletedStatus ="";
 
     @Override
     public String getActionTitle() {
@@ -67,6 +66,12 @@ public class Orderllist extends BaseAppCompatActivity{
                 onBackPressed();
             }
         });
+        // here its checking that u Fully Completed the Payment From Delivery
+        String status = getIntent().getStringExtra("isComp");
+        if (status !=null && status.equals("Yes")){
+            viewPager.setCurrentItem(2);
+        }
+
     }
 
     @Override
@@ -83,7 +88,7 @@ public class Orderllist extends BaseAppCompatActivity{
         adapter.addFragment(pendingorder, getString(R.string.pending));
         adapter.addFragment(paymentpending, getString(R.string.payment_pending));
         adapter.addFragment(completed, getString(R.string.completed));
-      //  adapter.notifyDataSetChanged();
+       // adapter.notifyDataSetChanged();
         viewPager.setAdapter(adapter);
 
     }
@@ -114,5 +119,12 @@ public class Orderllist extends BaseAppCompatActivity{
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(Orderllist.this,MainActivity.class));
+        finish();
     }
 }

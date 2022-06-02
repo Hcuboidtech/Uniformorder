@@ -134,6 +134,21 @@ public class UserPreference {
         helperPreference.setValue(Constants.USER_PREFERENCES.selectedpattern, String.valueOf(token));
     }
 
+    public void setSelectedDistrict(String district){
+        helperPreference.setValue(Constants.USER_PREFERENCES.selectedDistrict,district);
+    }
+
+    public String getSelectedDistrict(){
+        return helperPreference.getStringValue(Constants.USER_PREFERENCES.selectedDistrict,"");
+    }
+
+    public void setSelectedPayCenter(String payCenter){
+        helperPreference.setValue(Constants.USER_PREFERENCES.selectedPayCenter,payCenter);
+    }
+
+    public String getSelectedPayCenter(){
+        return helperPreference.getStringValue(Constants.USER_PREFERENCES.selectedPayCenter,"");
+    }
     public String getselectedSchool() {
         return helperPreference.getStringValue(Constants.USER_PREFERENCES.selectedSchool, "");
     }

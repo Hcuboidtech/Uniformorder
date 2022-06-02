@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import com.uniformorder.uniformorderr.activities.UserPreference;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;

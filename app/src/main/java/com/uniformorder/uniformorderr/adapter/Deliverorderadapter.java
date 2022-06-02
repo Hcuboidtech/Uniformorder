@@ -21,17 +21,18 @@ import com.uniformorder.uniformorderr.activities.UserPreference;
 import com.uniformorder.uniformorderr.model.Editorder;
 import com.uniformorder.uniformorderr.model.SaveorderRequestdetails;
 import com.uniformorder.uniformorderr.model.Standard;
+import com.uniformorder.uniformorderr.testModel.StandardsItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Deliverorderadapter extends RecyclerView.Adapter<Deliverorderadapter.ViewHolder> {
-    List<Standard> profilelist;
+    List<StandardsItem> profilelist;
     private Context context;
     private static final String TAG = Deliverorderadapter.class.getName();
     int stdid;
-    List<Standard> editlist = new ArrayList<>();
+    List<StandardsItem> editlist = new ArrayList<>();
 
 
     onItemClickLisnear mOnItemClickLisnear;
@@ -52,7 +53,7 @@ public class Deliverorderadapter extends RecyclerView.Adapter<Deliverorderadapte
 
     @Override
     public void onBindViewHolder(@NonNull Deliverorderadapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        final Standard listdetails = profilelist.get(position);
+        final StandardsItem listdetails = profilelist.get(position);
     //    final Standard listdetails1 = profilelist1.get(position);
 
         holder.simpleTextView.setText(listdetails.getStandard());
@@ -87,7 +88,7 @@ public class Deliverorderadapter extends RecyclerView.Adapter<Deliverorderadapte
 
     }
 
-    private void opendialuge(Standard objectSTD, int position) {
+    private void opendialuge(StandardsItem objectSTD, int position) {
         //Standard listdetails = profilelist.get(position);
         //Editorder saveorderRequestdetails = new Editorder();
 
@@ -178,7 +179,7 @@ public class Deliverorderadapter extends RecyclerView.Adapter<Deliverorderadapte
 
     }
 
-    public List<Standard> getSelectedArray() {
+    public List<StandardsItem> getSelectedArray() {
         return editlist;
     }
 
@@ -187,7 +188,7 @@ public class Deliverorderadapter extends RecyclerView.Adapter<Deliverorderadapte
         return profilelist.size();
     }
 
-    public void addData(List<Standard> data) {
+    public void addData(List<StandardsItem> data) {
         profilelist.clear();
         profilelist.addAll(data);
         notifyDataSetChanged();

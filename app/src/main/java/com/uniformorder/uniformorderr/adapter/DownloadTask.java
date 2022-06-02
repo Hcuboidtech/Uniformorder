@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+  ////////////// this class has some issues while downloading the task so its not using Further/*TODO @ShivamSharma */
 
 public class DownloadTask {
     private static final String TAG = "Download Task";
@@ -104,6 +105,7 @@ public class DownloadTask {
                     }, 3000);
 
                     Log.e(TAG, "Download Failed");
+                   // progressDialog.dismiss();
 
                 }
             } catch (Exception e) {

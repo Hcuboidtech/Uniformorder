@@ -4,10 +4,13 @@ import com.uniformorder.uniformorderr.model.Dashboardmodell;
 import com.uniformorder.uniformorderr.model.DeleteOrder;
 import com.uniformorder.uniformorderr.model.EditOrderResponse;
 import com.uniformorder.uniformorderr.model.Membermodel;
-import com.uniformorder.uniformorderr.model.Orderlistmodel;
 import com.uniformorder.uniformorderr.model.Registermodel;
+import com.uniformorder.uniformorderr.model.ResponseDistrict;
+import com.uniformorder.uniformorderr.model.ResponsePayCenter;
 import com.uniformorder.uniformorderr.model.Schoollistmodel;
 import com.uniformorder.uniformorderr.model.filtermodel;
+import com.uniformorder.uniformorderr.testModel.ResponseOrderList;
+
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +19,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -49,9 +50,9 @@ public interface APIInterface {
                                   @Field("name") String name,
                                   @Field("principal_name") String principal_name,
                                   @Field("assistant_name") String assistant_name,
-                                  @Field("state") String state,
-                                  @Field("pay_center") String pay_center,
-                                  @Field("taluka") String taluka,
+                                  @Field("village_id") String village_id,
+                                  @Field("pay_center_id") String pay_center_id,
+                                  @Field("district_id") String district_id,
                                   @Field("mobile1") String mobile1,
                                   @Field("mobile2") String mobile2);
 
@@ -103,7 +104,9 @@ public interface APIInterface {
     @POST("order/excelexport")
     Call<filtermodel> excelexport(@Field("login_id") String login_id,
                                   @Field("start_date") String start_date,
-                                  @Field("end_date") String end_date);
+                                  @Field("end_date") String end_date,
+                                  @Field("select_district")String select_district,
+                                  @Field("select_pay_center")String select_pay_center);
 
     @FormUrlEncoded
     @POST("school/delete")
@@ -139,9 +142,9 @@ public interface APIInterface {
 
     @FormUrlEncoded
     @POST("order/list")
-    Call<Orderlistmodel> orderlist(@Field("login_id") String login_id,
-                                   @Field("type") String type,
-                                   @Field("search_value") String search_value);
+    Call<ResponseOrderList> orderlist(@Field("login_id") String login_id,
+                                      @Field("type") String type,
+                                      @Field("search_value") String search_value);
 
     @FormUrlEncoded
     @POST("user/update")
@@ -191,4 +194,13 @@ public interface APIInterface {
                                                @Part("standards[]")List<Integer> standard,
                                                @Part("boys[]")List<Integer>boys,
                                                @Part("girls[]")List<Integer>girls);
+
+    @FormUrlEncoded
+    @POST("district")
+    Call<ResponseDistrict>getDistrict(@Field("login_id")String id);
+
+    @FormUrlEncoded
+    @POST("district/paycenter")
+    Call<ResponsePayCenter>getPayCenter(@Field("login_id")String login_id,
+                                        @Field("select_district")String select_district);
 }

@@ -236,7 +236,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_9sdp"
-                        android:text="Total Payable amount"
+                        android:text=""
                         android:textColor="@color/purple_500"
                         android:textSize="@dimen/_13sdp"
                         android:textStyle="bold" />

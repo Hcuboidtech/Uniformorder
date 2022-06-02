@@ -306,7 +306,8 @@ public class Constants {
         String selectedSchoolid = "selectedSchoolid";
         String selectedpatternid = "selectedpatternid";
 
-
+        String selectedDistrict ="selectedDistrict";
+        String selectedPayCenter ="selectedDistrict";
         String profileuri="profileuri";
 
         String expiredate = "expiredate";

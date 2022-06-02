@@ -19,11 +19,13 @@ import com.uniformorder.uniformorderr.R;
 import com.uniformorder.uniformorderr.adapter.Deliverorderadapter;
 import com.uniformorder.uniformorderr.model.Editorder;
 import com.uniformorder.uniformorderr.model.Orderlistdetails;
-import com.uniformorder.uniformorderr.model.Orderlistmodel;
 import com.uniformorder.uniformorderr.model.Schoollistmodel;
 import com.uniformorder.uniformorderr.model.Standard;
 import com.uniformorder.uniformorderr.retrofit.APIClient;
 import com.uniformorder.uniformorderr.retrofit.APIInterface;
+import com.uniformorder.uniformorderr.testModel.DataItem;
+import com.uniformorder.uniformorderr.testModel.ResponseOrderList;
+import com.uniformorder.uniformorderr.testModel.StandardsItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +43,7 @@ import retrofit2.Response;
 
 public class Delivernow extends BaseAppCompatActivity implements Deliverorderadapter.onItemClickLisnear {
     Deliverorderadapter profilelistadapter;
-    List<Standard> schoollistdetails = new ArrayList<>();
+    List<StandardsItem> schoollistdetails = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
     EditText edtrecevied, edtpayment;
     TextView txtorder, txtschoolname, totalpayable;
@@ -56,7 +58,7 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
     List<Integer> stdid;
     Button btnaddpattern;
 
-    Orderlistdetails user;
+    DataItem user;
 
     RadioGroup radioGroup;
     RadioButton radioFulldelivery, radiopartial;
@@ -79,7 +81,7 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //  setContentView(R.layout.activity_delivernow);
+        // setContentView(R.layout.activity_delivernow);
 
         recylceorderlist = findViewById(R.id.recylceorderlist);
         btnaddpattern = findViewById(R.id.btnaddpattern);
@@ -97,12 +99,13 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
         loginid = UserPreference.getInstance(Delivernow.this).getLoginId();
 
         if (extras != null) {
-            order_id = extras.getString("orderid");
+            order_id = String.valueOf(extras.getInt("orderid"));
             ordertype = extras.getString("ordertype");
-            user = (Orderlistdetails) extras.getSerializable("user");
-            txtschoolname.setText("School Name: " + user.getSchoolsName());
+            user = (DataItem) extras.getSerializable("user");
+            txtschoolname.setText("School Name: " + user.getSchool().getName());
             totalpayable.setText("Total Payable amount " + user.getPendingAmount() + " INR");
             txtorder.setText("Order No. " + order_id);
+            Log.d("orderType",ordertype);
         }
 
         profilelistadapter = new Deliverorderadapter(Delivernow.this);
@@ -119,8 +122,9 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
         btnaddpattern.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (profilelistadapter.getSelectedArray().size() != 0) {
-
+                Log.d("DILIVERY ->", "API CLICKED 1");
+                if (profilelistadapter.getItemCount() != 0) {
+                    Log.d("DILIVERY ->", "API CLICKED 2");
                     std = new ArrayList<>();
                     boys = new ArrayList<>();
                     girls = new ArrayList<>();
@@ -135,7 +139,23 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
                         girls.add(Integer.valueOf(profilelistadapter.getSelectedArray().get(i).getGirls()));
                     }
                     showHideProgressDialog(true);
-                    editorder();
+                    Log.d("DELIVERY ->", "API CLICKED");
+                    int edit = Integer.parseInt(edtpayment.getText().toString());
+                    Float payamt = Float.parseFloat(user.getPendingAmount());
+                    int am =  Math.round(payamt);
+                    Log.d("edit ->", String.valueOf(edit));
+                    Log.d("payableFloat ->", String.valueOf(payamt));
+                    Log.d("payableInt ->", String.valueOf(am));
+                    if (edit > am){
+                        Log.d("DILIVERY ->", "value is larger");
+                        showHideProgressDialog(false);
+                        Toast.makeText(Delivernow.this, "Invalid Payment", Toast.LENGTH_SHORT).show();
+                       showHideProgressDialog(false);
+                    }else{
+                        editorder();
+                    }
+                }else{
+                    Log.d("Delevery Adapter","IS EMPTY");
                 }
             }
         });
@@ -164,6 +184,8 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
     }
 
     private void editorder() {
+
+        Log.d("loggg", "APICALLED");
         showHideProgressDialog(true);
         received_by = edtrecevied.getText().toString();
         payment_amount = edtpayment.getText().toString();
@@ -189,10 +211,11 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
                                 showHideProgressDialog(false);
                                 Log.d("loggg1", "true");
                                 Toast.makeText(Delivernow.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                /*Intent i = new Intent(Delivernow.this, MainActivity.class);
+                                Intent i = new Intent(Delivernow.this, Orderllist.class);
+                                i.putExtra("isComp","Yes");
                                 startActivity(i);
-                                finish();*/
-                                onBackPressed();
+                                finish();
+
                             } else {
                                 showHideProgressDialog(false);
                                 Toast.makeText(Delivernow.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -233,14 +256,14 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
         loginid = UserPreference.getInstance(Delivernow.this).getLoginId();
         showHideProgressDialog(true);
         APIInterface apiInterface = APIClient.getClient(Delivernow.this).create(APIInterface.class);
-        Call<Orderlistmodel> userlist = apiInterface.orderlist(loginid, ordertype, strsearch);
-        userlist.enqueue(new Callback<Orderlistmodel>() {
+        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, ordertype, strsearch);
+        userlist.enqueue(new Callback<ResponseOrderList>() {
             @Override
-            public void onResponse(Call<Orderlistmodel> call, Response<Orderlistmodel> response) {
+            public void onResponse(Call<ResponseOrderList> call, Response<ResponseOrderList> response) {
                 //   hideSwipeRefreshView();
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        if (response.body().getStatus().toString().equals("true")) {
+                        if (response.body().isStatus()) {
                             showHideProgressDialog(false);
                             recylceorderlist.setVisibility(View.VISIBLE);
                             if (response.body().getData() != null && response.body().getData().size() != 0) {
@@ -280,7 +303,7 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
             }
 
             @Override
-            public void onFailure(Call<Orderlistmodel> call, Throwable t) {
+            public void onFailure(Call<ResponseOrderList> call, Throwable t) {
                 //  isLastPage = true;
                 hideProgressDialog();
                 //hideSwipeRefreshView();

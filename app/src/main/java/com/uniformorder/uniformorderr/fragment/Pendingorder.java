@@ -25,6 +25,8 @@ import com.uniformorder.uniformorderr.model.Orderlistdetails;
 import com.uniformorder.uniformorderr.model.Orderlistmodel;
 import com.uniformorder.uniformorderr.retrofit.APIClient;
 import com.uniformorder.uniformorderr.retrofit.APIInterface;
+import com.uniformorder.uniformorderr.testModel.DataItem;
+import com.uniformorder.uniformorderr.testModel.ResponseOrderList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +52,7 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
     private static final String ARG_PARAM2 = "param2";
 
     Orderadapter profilelistadapter;
-    List<Orderlistdetails> schoollistdetails = new ArrayList<>();
+    List<DataItem> schoollistdetails = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
     RecyclerView recylceorderlist;
     String loginid;
@@ -101,11 +103,12 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
 
         recylceorderlist = view.findViewById(R.id.recylceorderlist);
 
-        profilelistadapter = new Orderadapter(getContext(),this);
+        profilelistadapter = new Orderadapter(getContext(),this,"");
         linearLayoutManager = new LinearLayoutManager(getContext());
         recylceorderlist.setLayoutManager(linearLayoutManager);
         recylceorderlist.setAdapter(profilelistadapter);
         recylceorderlist.getRecycledViewPool().clear();
+        recylceorderlist.setItemAnimator(null);
         profilelistadapter.notifyDataSetChanged();
 
         edtsearch = view.findViewById(R.id.edtsearch);
@@ -150,22 +153,26 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
 
         APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
         Log.d("DXX ->",strsearch);
-        Call<Orderlistmodel> userlist = apiInterface.orderlist(loginid, "pending", strsearch);
-        userlist.enqueue(new Callback<Orderlistmodel>() {
+        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "pending", strsearch);
+        userlist.enqueue(new Callback<ResponseOrderList>() {
             @Override
-            public void onResponse(Call<Orderlistmodel> call, Response<Orderlistmodel> response) {
+            public void onResponse(Call<ResponseOrderList> call, Response<ResponseOrderList> response) {
 
                 UserPreference.getInstance(getContext()).setpayment_pending("pending");
                 //   hideSwipeRefreshView();
                 if (response.isSuccessful()) {
-                    Orderlistmodel orderlistmodel = response.body();
-                    List<Orderlistdetails>orderlistdetails =  orderlistmodel.getData();
-                          Log.d("ID ->",orderlistdetails.get(0).getId());
+                    //Orderlistmodel orderlistmodel = response.body();
+                 ResponseOrderList responseOrderList = response.body();
+
+                //    List<Orderlistdetails>orderlistdetails =  orderlistmodel.getData();
+                    List<DataItem>orderlistdetails =  responseOrderList.getData();
+                          Log.d("ID ->",String.valueOf(orderlistdetails.get(0).getId()));
                           UserPreference userPreference = UserPreference.getInstance(getContext());
-                          ;
+
                           Log.d("Auth Token",userPreference.getToken());
                     if (response.body() != null) {
-                        if (response.body().getStatus().toString().equals("true")) {
+                        //if (response.body().getStatus().toString().equals("true")) {
+                            if (response.body().isStatus()) {
                             showHideProgressDialog(false);
                             recylceorderlist.setVisibility(View.VISIBLE);
                             if (response.body().getData() != null && response.body().getData().size() != 0) {
@@ -196,6 +203,7 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         Toast.makeText(getActivity(), jObjError.getString("message"), Toast.LENGTH_SHORT).show();
+                        Log.d("Error ->",jObjError.getString("message"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -205,7 +213,7 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
             }
 
             @Override
-            public void onFailure(Call<Orderlistmodel> call, Throwable t) {
+            public void onFailure(Call<ResponseOrderList> call, Throwable t) {
                 //  isLastPage = true;
                 hideProgressDialog();
                 //hideSwipeRefreshView();

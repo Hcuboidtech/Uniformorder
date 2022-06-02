@@ -26,35 +26,12 @@ public class EditOrderListViewModel extends ViewModel {
     int boys_l = 0;
    int girls_l = 0;
 
-    public  String order_id1 ="",login_id1="",patternId1="",rate11="",rate21="",total_amount1=""
+    public  String order_id1 ="",login_id1="",patternId1="",rate11="",rate21="",rate31="",total_amount1=""
             ,deposite1="",school_Id1="";
-  //  String[] boys,standard,girls;
 
    public void getData(){
 
     }
-//   public void saveData(String order_idl,String login_id,
-//                  String school_id,String patternId,
-//                  String rate1,String rate2,
-//                  String total_amount,String deposite){
-//
-////        order_id, login_id, school_id,
-////        pattern_id, rate1, rate2, total_amount,
-////        deposite, standards[], boys[], girls[]
-//        HashMap editOrder = new HashMap<String,String>();
-//           this.order_id = order_id;
-//           this.login_id =login_id;
-//           this.patternId = patternId;
-//           this.rate1 = rate1;
-//           this.rate2 = rate2;
-//           this.total_amount = total_amount;
-//           this.school_Id = school_id;
-//           this.deposite = deposite;
-////           this.standard = standard;
-////           this.boys = boys;
-////           this.girls = girls;
-////         //  editOrder.put("order_Id",order_id);
-//    }
      ArrayList<String> returnData(){
 
        return data;
@@ -96,19 +73,19 @@ public class EditOrderListViewModel extends ViewModel {
      }
     public void saveData(String order_id,String school_id,
                          String login_id, String pattern_id,
-                         String rate1, String rate2, String total_amount,
+                         String rate1, String rate2,String rate3, String total_amount,
                          String deposite) {
 
-         this.order_id1 = order_id; //44
-         this.school_Id1 = school_id; //22
-         this.login_id1 = login_id; //22
-         this.patternId1 = pattern_id; //11
-         this.rate11 = rate1; //12.00
-                // 12.00
+         this.order_id1 = order_id;
+         this.school_Id1 = school_id;
+         this.login_id1 = login_id;
+         this.patternId1 = pattern_id;
+         this.rate11 = rate1;
          this.rate21 = rate2;
-         this.total_amount1 = total_amount; //24.00
-         this.deposite1 = deposite; //2.00
-
+         this.rate31 = rate3;
+         this.total_amount1 = total_amount;
+         this.deposite1 = deposite;
+        /////////////////////////////////////////////
          Log.d("order id999",this.order_id1);
         Log.d("SaveData-> orderid",order_id);
         data.add(this.order_id1);
@@ -127,29 +104,3 @@ public class EditOrderListViewModel extends ViewModel {
 
     }
 }
-
-//for (int i = 0; i < Constants.editcardList.size(); i++) {
-//             std_l.add(Constants.editcardList.get(i).getStandard());
-//             boys_l.add(Constants.editcardList.get(i).getBoys());
-//             girls_l.add(Constants.editcardList.get(i).getGirls());
-//             Log.d("Girls ->>>VM", String.valueOf(girls_l.get(i)));
-//
-//             if (Constants.editcardList.get(i).getStandard() <= 4) {
-//
-//                 int boysGrildTotal = Constants.editcardList.get(i).getBoys() + Constants.editcardList.get(i).getGirls();
-//                 total1to4 = total1to4 + boysGrildTotal;
-//
-//                 Log.d("totall14", String.valueOf(total1to4));
-//             } else {
-//
-//                 int boysGrildTotal = Constants.editcardList.get(i).getBoys() + Constants.editcardList.get(i).getGirls();
-//                 total5to8 = total5to8 + boysGrildTotal;
-//
-//                 Log.d("totall58", String.valueOf(total5to8));
-//             }
-//
-//
-//             Log.d("totall14", String.valueOf(total1to4));
-//             Log.d("totall58", String.valueOf(total5to8));
-//
-//         }

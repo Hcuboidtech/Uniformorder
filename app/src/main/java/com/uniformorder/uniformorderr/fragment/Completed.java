@@ -13,16 +13,16 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.uniformorder.uniformorderr.R;
 import com.uniformorder.uniformorderr.activities.OnItemClicked;
 import com.uniformorder.uniformorderr.activities.UserPreference;
 import com.uniformorder.uniformorderr.adapter.Orderadapter;
-import com.uniformorder.uniformorderr.model.Orderlistdetails;
-import com.uniformorder.uniformorderr.model.Orderlistmodel;
 import com.uniformorder.uniformorderr.retrofit.APIClient;
 import com.uniformorder.uniformorderr.retrofit.APIInterface;
+import com.uniformorder.uniformorderr.testModel.DataItem;
+import com.uniformorder.uniformorderr.testModel.ResponseOrderList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,9 +46,9 @@ public class Completed extends BaseFragment implements OnItemClicked {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    TextView edit_btn,delete_btn;
     Orderadapter profilelistadapter;
-    List<Orderlistdetails> schoollistdetails = new ArrayList<>();
+    List<DataItem> schoollistdetails = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
     RecyclerView recylceorderlist;
     String loginid;
@@ -94,15 +94,12 @@ public class Completed extends BaseFragment implements OnItemClicked {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recylceorderlist = view.findViewById(R.id.recylceorderlist);
-
-
-        profilelistadapter = new Orderadapter(getContext(),this);
+        profilelistadapter = new Orderadapter(getContext(),this,"Yes");
         linearLayoutManager = new LinearLayoutManager(getContext());
         recylceorderlist.setLayoutManager(linearLayoutManager);
         recylceorderlist.setAdapter(profilelistadapter);
         edtsearch = view.findViewById(R.id.edtsearch);
         // Inflate the layout for this fragment
-
 
         edtsearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -146,16 +143,16 @@ public class Completed extends BaseFragment implements OnItemClicked {
         showHideProgressDialog(true);
 
         APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
-        Call<Orderlistmodel> userlist = apiInterface.orderlist(loginid, "completed", strsearch);
-        userlist.enqueue(new Callback<Orderlistmodel>() {
+        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "completed", strsearch);
+        userlist.enqueue(new Callback<ResponseOrderList>() {
             @Override
-            public void onResponse(Call<Orderlistmodel> call, Response<Orderlistmodel> response) {
+            public void onResponse(Call<ResponseOrderList> call, Response<ResponseOrderList> response) {
 
                 //   hideSwipeRefreshView();
                 UserPreference.getInstance(getContext()).setpayment_pending("completed");
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        if (response.body().getStatus().toString().equals("true")) {
+                        if (response.body().isStatus()) {
                             showHideProgressDialog(false);
                             recylceorderlist.setVisibility(View.VISIBLE);
 
@@ -202,7 +199,7 @@ public class Completed extends BaseFragment implements OnItemClicked {
             }
 
             @Override
-            public void onFailure(Call<Orderlistmodel> call, Throwable t) {
+            public void onFailure(Call<ResponseOrderList> call, Throwable t) {
                 //  isLastPage = true;
                 hideProgressDialog();
                 //hideSwipeRefreshView();

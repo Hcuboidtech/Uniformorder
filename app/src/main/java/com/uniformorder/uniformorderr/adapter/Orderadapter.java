@@ -8,8 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,33 +21,32 @@ import com.uniformorder.uniformorderr.activities.OnItemClicked;
 import com.uniformorder.uniformorderr.activities.PassedStandard;
 import com.uniformorder.uniformorderr.activities.Quickorderforrm;
 import com.uniformorder.uniformorderr.activities.UserPreference;
-import com.uniformorder.uniformorderr.model.Memberdetails;
-import com.uniformorder.uniformorderr.model.Orderlistdetails;
 import com.uniformorder.uniformorderr.model.SaveorderRequestdetails;
 import com.uniformorder.uniformorderr.model.Standard;
+import com.uniformorder.uniformorderr.testModel.DataItem;
+import com.uniformorder.uniformorderr.testModel.StandardsItem;
 
-import java.text.DateFormat;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> implements PassedStandard {
 
     public OnItemClicked onItemClicked;
 
-    List<Orderlistdetails> profilelist;
+    List<DataItem> profilelist;
     private Context context;
     private static final String TAG = Orderadapter.class.getName();
-    String strbirthdate,convertedTime;
+    String strbirthdate,convertedTime,completeStatus="No";
 
-    public Orderadapter(Context loContext, OnItemClicked listner) {
-        this.profilelist = new ArrayList<>();
+    public Orderadapter(Context loContext, OnItemClicked listner,String completeFrag) {
+        this.profilelist = new ArrayList<DataItem>();
         this.context = loContext;
         this.onItemClicked = listner;
+        this.completeStatus =completeFrag;
     }
     @NonNull
     @Override
@@ -59,7 +58,7 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull Orderadapter.ViewHolder holder,int position) {
-        final Orderlistdetails listdetails = profilelist.get(position);
+        final DataItem listdetails = profilelist.get(position);
         String ordder= UserPreference.getInstance(context).getpayment_pending();
         Log.d("Orderadapter",ordder);
         if (ordder.equals("payment_pending")){
@@ -72,7 +71,10 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
             holder.paynow.setText("Deliver Now");
         }
         else {
+            holder.delete.setVisibility(View.GONE);
+            holder.edit.setVisibility(View.GONE);
             holder.paynow.setVisibility(View.INVISIBLE);
+            holder.linearLayout.setVisibility(View.GONE);
         }
 
         holder.edit.setOnClickListener(new View.OnClickListener() {
@@ -84,31 +86,31 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
 
                 Intent intent = new Intent(context, Quickorderforrm.class);
                 intent.putExtra("isEdit","order");
-                intent.putExtra("PatternName",profilelist.get(position).getPatternName());
-                intent.putExtra("details",profilelist.get(position));
-                intent.putExtra("principalName",profilelist.get(position).getPrincipalName());
-                intent.putExtra("SchoolName",profilelist.get(position).getSchoolsName());
+                intent.putExtra("PatternName",profilelist.get(position).getPattern().getName());
+                intent.putExtra("principalName",profilelist.get(position).getSchool().getPrincipalName());
+                intent.putExtra("SchoolName",profilelist.get(position).getSchool().getName());
                 intent.putExtra("id",profilelist.get(position).getId());
-                intent.putExtra("idSchool",profilelist.get(position).getSchoolId());
+                intent.putExtra("idSchool",profilelist.get(position).getSchool().getId());
                 intent.putExtra("loginId",profilelist.get(position).getLoginId());
                 intent.putExtra("idpattern",profilelist.get(position).getPatternId());
                 intent.putExtra("orderId",profilelist.get(position).getId());
-                intent.putExtra("schoolName",profilelist.get(position).getSchoolsName());
+                intent.putExtra("schoolName",profilelist.get(position).getSchool().getId());
                 intent.putExtra("rate1",profilelist.get(position).getRate1());
                 intent.putExtra("rate2",profilelist.get(position).getRate2());
+                intent.putExtra("rate3",profilelist.get(position).getRate3());
                 intent.putExtra("totalam",profilelist.get(position).getTotalAmount());
                 intent.putExtra("deposite",profilelist.get(position).getDeposite());
-
-                Log.d("SchoolName",profilelist.get(position).getSchoolsName());
+///////////////////////////       FOR LOGS     ////////////////////////////////////
+                Log.d("SchoolName",profilelist.get(position).getSchool().getName());
                 Log.d("TotalAmount",profilelist.get(position).getTotalAmount());
                 Log.d("IDSchool",profilelist.get(position).getSchoolId());
                 Log.d("LoginId",profilelist.get(position).getLoginId());
                 Log.d("IDpattern",profilelist.get(position).getPatternId());
-                Log.d("PatternName",profilelist.get(position).getPatternName());
-                List<Standard> list = profilelist.get(position).getStandards();
-                Log.d("OrderId ->",profilelist.get(position).getId());
-                Log.d("SchoolName ->",profilelist.get(position).getSchoolsName());
-                Toast.makeText(context, "Edit", Toast.LENGTH_SHORT).show();
+                Log.d("PatternName",profilelist.get(position).getPattern().getName());
+                List<StandardsItem> list = profilelist.get(position).getStandards();
+                Log.d("OrderId ->",String.valueOf(profilelist.get(position).getId()));
+                Log.d("SchoolName ->",profilelist.get(position).getSchool().getName());
+//                Toast.makeText(context, "Edit", Toast.LENGTH_SHORT).show();
                 // passing the standards //
 
                 for (int i =0; i<list.size(); i++){
@@ -142,21 +144,6 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
                  intent.putParcelableArrayListExtra("EditData",Constants.editcardList);
                  context.startActivity(intent);
                  ((Activity)context).finish();
-                 //  list.get(position).
-                //   list.get()
-                //        order_id, login_id, school_id,
-//        pattern_id, rate1, rate2, total_amount,
-//        deposite, standards[], boys[], girls[]
-
-//                 saveorderRequestdetails.setBoys();
-               //    saveorderRequestdetails.setBoys(Integer.parseInt(list.get(i).getBoys()));
-    // onItemClicked.onItemSend(profilelist.get(position).getId(),profilelist.get(position).getSchoolId());
-//                        profilelist.get(position).getLoginId(),profilelist.get(position).getPatternId(),
-//                        profilelist.get(position).getRate1(),profilelist.get(position).getRate2(),
-//                        profilelist.get(position).getTotalAmount(),
-//                        profilelist.get(position).getStandards(),);
-
-              //
 
 
             }
@@ -169,41 +156,39 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
                  notifyItemRangeChanged(holder.getAdapterPosition(),profilelist.size());
                Log.d("ID_ADP ->",String.valueOf(listdetails.getId()));
                // Toast.makeText(context, String.valueOf(position), Toast.LENGTH_SHORT).show();
-               onItemClicked.onClick(listdetails.getId());
+               onItemClicked.onClick(String.valueOf(listdetails.getId()));
             }
         });
         holder.paynow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ordder.equals("pending")){
-                    Log.d("TAG",listdetails.getId());
+                    Log.d("TAG",String.valueOf(listdetails.getId()));
                     Intent i=new Intent(context, Delivernow.class);
                     Bundle b = new Bundle();
-                    b.putSerializable("user", listdetails);
+                    b.putSerializable("user", (Serializable) listdetails);
                     i.putExtras(b);
-
                     i.putExtra("orderid",listdetails.getId());
+                    Log.d("orderid11", String.valueOf(listdetails.getId()));
                     i.putExtra("ordertype","pending");
                     context.startActivity(i);
                 }
                 else {
                     Intent i=new Intent(context, Delivernow.class);
                     Bundle b = new Bundle();
-                    b.putSerializable("user", listdetails);
+                    b.putSerializable("user", String.valueOf(listdetails));
                     i.putExtras(b);
-                    i.putExtra("orderid",listdetails.getId());
+                    i.putExtra("orderid",String.valueOf(listdetails.getId()));
                     i.putExtra("ordertype","payment_pending");
                     context.startActivity(i);
                 }
             }
         });
-
-       // tTime(listdetails.getCreatedAt());
         Log.d("TAG",listdetails.getOrderDate());
-        holder.orderid.setText(listdetails.getId());
+        holder.orderid.setText(String.valueOf(listdetails.getId())); // this is need to check //
         holder.date.setText("Created at: "+ listdetails.getOrderDate());
-        holder.schoolname.setText("School Name: "+listdetails.getSchoolsName());
-        holder.principalname.setText("Principal Name: "+listdetails.getPrincipalName());
+        holder.schoolname.setText("School Name: "+listdetails.getSchool().getName());
+        holder.principalname.setText("Principal Name: "+listdetails.getSchool().getPrincipalName());
 
         Double d = Double.valueOf(listdetails.getTotalAmount());
         int i = d.intValue();
@@ -217,14 +202,10 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
     public int getItemCount() {
         return profilelist.size();
     }
-    public void addData(List<Orderlistdetails> data) {
+    public void addData(List<DataItem> data) {
         profilelist.clear();
         profilelist.addAll(data);
         notifyDataSetChanged();
-    }
-
-    void openEditScreen(){
-
     }
 
     @Override
@@ -235,6 +216,7 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView orderid,date,schoolname,principalname,total,pendingamout;
         TextView paynow,delete,edit;
+        LinearLayout linearLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             pendingamout=itemView.findViewById(R.id.pendingamout);
@@ -246,10 +228,7 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
             paynow=itemView.findViewById(R.id.paynow);
             edit = itemView.findViewById(R.id.edit_btn);
             delete = itemView.findViewById(R.id.delete_btn);
-        }
-
-        void passedStd(){
-
+            linearLayout = itemView.findViewById(R.id.action_box);
         }
 
         @Override

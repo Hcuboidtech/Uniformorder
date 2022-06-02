@@ -95,6 +95,7 @@
                    android:textStyle="bold" />
            </LinearLayout>
         <LinearLayout
+            android:id="@+id/action_box"
             android:layout_marginTop="@dimen/_10sdp"
             android:weightSum="1"
             android:layout_gravity="center"
