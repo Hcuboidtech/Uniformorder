@@ -5,8 +5,10 @@ import com.uniformorder.uniformorderr.model.DeleteOrder;
 import com.uniformorder.uniformorderr.model.EditOrderResponse;
 import com.uniformorder.uniformorderr.model.Membermodel;
 import com.uniformorder.uniformorderr.model.Registermodel;
+import com.uniformorder.uniformorderr.model.ResponseDeleteAddSchool;
 import com.uniformorder.uniformorderr.model.ResponseDistrict;
 import com.uniformorder.uniformorderr.model.ResponsePayCenter;
+import com.uniformorder.uniformorderr.model.ResponseSchoolList;
 import com.uniformorder.uniformorderr.model.Schoollistmodel;
 import com.uniformorder.uniformorderr.model.filtermodel;
 import com.uniformorder.uniformorderr.testModel.ResponseOrderList;
@@ -68,9 +70,9 @@ public interface APIInterface {
                                      @Field("name") String name,
                                      @Field("principal_name") String principal_name,
                                      @Field("assistant_name") String assistant_name,
-                                     @Field("state") String state,
-                                     @Field("pay_center") String pay_center,
-                                     @Field("taluka") String taluka,
+                                     @Field("village_id") String village,
+                                     @Field("pay_center_id") String pay_center,
+                                     @Field("district_id") String district,
                                      @Field("mobile1") String mobile1,
                                      @Field("mobile2") String mobile2);
 
@@ -88,10 +90,10 @@ public interface APIInterface {
 
     @FormUrlEncoded
     @POST("school/list")
-    Call<Schoollistmodel> schoollist(@Field("login_id") String login_id,
-                                     @Field("limit") String limit,
-                                     @Field("offset") String offset,
-                                     @Field("search_value") String search_value);
+    Call<ResponseSchoolList> schoollist(@Field("login_id") String login_id,
+                                        @Field("limit") String limit,
+                                        @Field("offset") String offset,
+                                        @Field("search_value") String search_value);
 
 
     @FormUrlEncoded
@@ -109,9 +111,17 @@ public interface APIInterface {
                                   @Field("select_pay_center")String select_pay_center);
 
     @FormUrlEncoded
+    @POST("order/excelexport")
+    Call<filtermodel>excelExportAllPayCenter(@Field("login_id") String login_id,
+                                  @Field("start_date") String start_date,
+                                  @Field("end_date") String end_date,
+                                  @Field("select_district")String select_district
+                                   );
+
+    @FormUrlEncoded
     @POST("school/delete")
-    Call<Schoollistmodel> delete(@Field("login_id") String login_id,
-                                 @Field("school_id") String schoolid);
+    Call<ResponseDeleteAddSchool> delete(@Field("login_id") String login_id,
+                                         @Field("school_id") String schoolid);
 
     @FormUrlEncoded
     @POST("user/delete")
@@ -193,7 +203,8 @@ public interface APIInterface {
     Call<EditOrderResponse> editOrderForUpdate(@PartMap() Map<String, RequestBody> partMap,
                                                @Part("standards[]")List<Integer> standard,
                                                @Part("boys[]")List<Integer>boys,
-                                               @Part("girls[]")List<Integer>girls);
+                                               @Part("girls[]")List<Integer>girls,
+                                               @Part("standard_id[]")List<Integer>standID);
 
     @FormUrlEncoded
     @POST("district")

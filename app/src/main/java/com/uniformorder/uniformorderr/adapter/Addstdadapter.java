@@ -5,12 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uniformorder.uniformorderr.R;
@@ -54,6 +52,9 @@ public class Addstdadapter extends RecyclerView.Adapter<Addstdadapter.ViewHolder
             holder.txtgirls.setText("Girls: " +String.valueOf(listdetails.getGirls()));
             total=listdetails.getBoys() + listdetails.getGirls();
             holder.txttotal.setText("Total: "+String.valueOf(total));
+            for (int i = 0 ; i<Constants.editcardList.size();i++){
+                Log.d("SD ->ADAPTER SD_ID",Constants.editcardList.get(position).getStandardId().toString());
+            }
             for(int i=0;i<Constants.editcardList.size();i++) {
                 int total1=0,std1to4=0,std5to8=0,allstd1to4=0,allstd5to8=0;
                 total1 = Constants.editcardList.get(i).getBoys() +
@@ -80,11 +81,16 @@ public class Addstdadapter extends RecyclerView.Adapter<Addstdadapter.ViewHolder
             holder.deleteStandard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                 //   delete(profilelist,position);
-                    profilelist.remove(holder.getAdapterPosition());
+
+                     mOnItemClickLisnear.updatedWhenDelete(holder.txtstd.getText().toString(),holder.txttotal.getText().toString());
+                      Log.d("ADAPTER POSITION", String.valueOf(holder.getAdapterPosition()));
+                     Constants.editcardList.get(holder.getAdapterPosition()).setStandardId(0);
+                     checkStandID();
+                     profilelist.remove(holder.getAdapterPosition());
                     notifyItemChanged(holder.getAdapterPosition());
                     notifyItemRemoved(holder.getAdapterPosition());
                     notifyItemRangeChanged(holder.getAdapterPosition(), profilelist.size());
+
                 }
             });
         }else{
@@ -122,26 +128,30 @@ public class Addstdadapter extends RecyclerView.Adapter<Addstdadapter.ViewHolder
         }
       Log.d("List",String.valueOf(profilelist.isEmpty()));
     }
+    void checkStandID(){
+        Log.d("SD ->ADAPTER SD_ID","Function Called");
+        for (int i = 0 ; i<Constants.editcardList.size();i++){
+            Log.d("SD ->ADAPTER SD_ID",Constants.editcardList.get(i).getStandardId().toString());
+        }
+    }
 
     @Override
     public int getItemCount() {
       if (origin.equals("isEdit")){
 
         if (profilelist.size() <= 0){
+            Log.d("LIST IS NULL","NULL");
+         //   Toast.makeText(context.getApplicationContext(), "LIST IS NULL", Toast.LENGTH_SHORT).show();
             mOnItemClickLisnear.checkListisEmpty(0);
         }else{
+            Log.d("LIST IS Not NULL","NOT NULL");
+           // Toast.makeText(context.getApplicationContext(), "LIST IS NOT NULL", Toast.LENGTH_SHORT).show();
             mOnItemClickLisnear.checkListisEmpty(2);
         }
       }
         return profilelist.size();
     }
 
-    public void delete(List<SaveorderRequestdetails> data,int pos){
-//        data.remove(pos);
-//        notifyDataSetChanged();
-//        notifyItemRangeChanged(pos,profilelist.size());
-
-    }
     public void add(List<SaveorderRequestdetails> data) {
         profilelist.clear();
         profilelist.addAll(data);
@@ -155,6 +165,7 @@ public class Addstdadapter extends RecyclerView.Adapter<Addstdadapter.ViewHolder
     public interface OnItemSelecteListener {
         void onItemSelected2(int alltotal,int stdd1tto4,int std5to8);
          void checkListisEmpty(int value);
+         void updatedWhenDelete(String s, String toString);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

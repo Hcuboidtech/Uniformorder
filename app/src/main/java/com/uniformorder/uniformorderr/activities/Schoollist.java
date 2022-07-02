@@ -18,8 +18,9 @@ import com.uniformorder.uniformorderr.R;
 import com.uniformorder.uniformorderr.adapter.PaginationScrollListener;
 import com.uniformorder.uniformorderr.adapter.RefreshListener;
 import com.uniformorder.uniformorderr.adapter.Schoollistadapter;
-import com.uniformorder.uniformorderr.model.Schoollistdetails;
-import com.uniformorder.uniformorderr.model.Schoollistmodel;
+import com.uniformorder.uniformorderr.model.DataItem;
+import com.uniformorder.uniformorderr.model.ResponseDeleteAddSchool;
+import com.uniformorder.uniformorderr.model.ResponseSchoolList;
 import com.uniformorder.uniformorderr.retrofit.APIClient;
 import com.uniformorder.uniformorderr.retrofit.APIInterface;
 
@@ -40,7 +41,7 @@ public class Schoollist extends BaseAppCompatActivity implements Schoollistadapt
     RecyclerView schoollistview;
     SwipeRefreshLayout swipeRefreshViewPropertyList;
     Schoollistadapter profilelistadapter;
-    List<Schoollistdetails> schoollistdetails = new ArrayList<>();
+    List<DataItem> schoollistdetails = new ArrayList<>();
     private int listLimite = 20;
     private boolean isLastPage = false;
     private boolean isLoading = false;
@@ -177,18 +178,19 @@ public class Schoollist extends BaseAppCompatActivity implements Schoollistadapt
         loginid = UserPreference.getInstance(mBaseAppCompatActivity).getLoginId();
         showHideProgressDialog(true);
         APIInterface apiInterface = APIClient.getClient(this).create(APIInterface.class);
-        Call<Schoollistmodel> schoollist = apiInterface.schoollist(loginid, String.valueOf(listLimite), "0", search_value);
-        schoollist.enqueue(new Callback<Schoollistmodel>() {
+        Call<ResponseSchoolList> schoollist = apiInterface.schoollist(loginid, String.valueOf(listLimite), "0", search_value);
+        schoollist.enqueue(new Callback<ResponseSchoolList>() {
             @Override
-            public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
+            public void onResponse(Call<ResponseSchoolList> call, Response<ResponseSchoolList> response) {
                 hideSwipeRefreshView();
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        if (response.body().getStatus().toString().equals("true")) {
+                        if (response.body().isStatus()) {
                             showHideProgressDialog(false);
                             schoollistview.setVisibility(View.VISIBLE);
                             if (response.body().getData() != null && response.body().getData().size() != 0) {
                                 //list
+                              //  Log.d("LOGCHECK_>", response.body().getData().get(0).getPayCenter());
                                 if (schoollistdetails != null) {
                                     if (schoollistdetails.size() == response.body().getData().size()) {
                                         isLastPage = true;
@@ -220,7 +222,7 @@ public class Schoollist extends BaseAppCompatActivity implements Schoollistadapt
             }
 
             @Override
-            public void onFailure(Call<Schoollistmodel> call, Throwable t) {
+            public void onFailure(Call<ResponseSchoolList> call, Throwable t) {
                 isLastPage = true;
                 hideProgressDialog();
                 hideSwipeRefreshView();
@@ -230,7 +232,7 @@ public class Schoollist extends BaseAppCompatActivity implements Schoollistadapt
 
 
     @Override
-    public void onClickEvent(int position, Schoollistdetails mPlanData, String mActionType) {
+    public void onClickEvent(int position, DataItem mPlanData, String mActionType) {
         switch (mActionType) {
             case "delete":
                 deletecall(mPlanData);
@@ -241,17 +243,17 @@ public class Schoollist extends BaseAppCompatActivity implements Schoollistadapt
         }
     }
 
-    private void deletecall(Schoollistdetails mPlanData) {
+    private void deletecall(DataItem mPlanData) {
         showHideProgressDialog(true);
 
         APIInterface apiInterface = APIClient.getClient(this).create(APIInterface.class);
-        Call<Schoollistmodel> delete = apiInterface.delete(loginid, String.valueOf(mPlanData.getId()));
-        delete.enqueue(new Callback<Schoollistmodel>() {
+        Call<ResponseDeleteAddSchool> delete = apiInterface.delete(loginid, String.valueOf(mPlanData.getId()));
+        delete.enqueue(new Callback<ResponseDeleteAddSchool>() {
             @Override
-            public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
+            public void onResponse(Call<ResponseDeleteAddSchool> call, Response<ResponseDeleteAddSchool> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        if (response.body().getStatus().toString().equalsIgnoreCase("true")) {
+                        if (response.body().isStatus()) {
                             showHideProgressDialog(false);
                             Toast.makeText(Schoollist.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             schoolllist(search_value);
@@ -276,7 +278,7 @@ public class Schoollist extends BaseAppCompatActivity implements Schoollistadapt
             }
 
             @Override
-            public void onFailure(Call<Schoollistmodel> call, Throwable t) {
+            public void onFailure(Call<ResponseDeleteAddSchool> call, Throwable t) {
 
             }
         });

@@ -2,10 +2,10 @@ package com.uniformorder.uniformorderr.activities;
 
 import com.uniformorder.uniformorderr.model.Editorder;
 import com.uniformorder.uniformorderr.model.SaveorderRequestdetails;
-import com.uniformorder.uniformorderr.model.Standard;
+
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class Constants {
     public static final String CHANNEL_ID = "my_channel_01";

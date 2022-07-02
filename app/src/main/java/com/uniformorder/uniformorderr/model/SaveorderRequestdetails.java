@@ -7,9 +7,17 @@ public class SaveorderRequestdetails implements Parcelable {
     Integer standard;
     Integer boys;
     Integer girls;
-
+    Integer standardId;
     public SaveorderRequestdetails() {
 
+    }
+
+    public Integer getStandardId(){
+        return standardId;
+    }
+
+    public void setStandardId(Integer standardId) {
+        this.standardId = standardId;
     }
 
     public Integer getStandard() {
@@ -42,7 +50,7 @@ public class SaveorderRequestdetails implements Parcelable {
         standard=in.readInt();
         boys=in.readInt();
         girls=in.readInt();
-
+        standardId = in.readInt();
 
     }
 
@@ -68,6 +76,7 @@ public class SaveorderRequestdetails implements Parcelable {
         parcel.writeInt(standard);
         parcel.writeInt(boys);
         parcel.writeInt(girls);
+        parcel.writeInt(standardId);
 
     }
 

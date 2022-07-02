@@ -13,15 +13,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uniformorder.uniformorderr.R;
-import com.uniformorder.uniformorderr.model.Schoollistdetails;
+import com.uniformorder.uniformorderr.model.DataItem;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class Schoollistadapter  extends RecyclerView.Adapter<Schoollistadapter.ViewHolder> {
-    List<Schoollistdetails> profilelist;
+    List<DataItem> profilelist;
     private Context context;
     private static final String TAG = Schoollistadapter.class.getName();
 
@@ -47,13 +45,13 @@ public class Schoollistadapter  extends RecyclerView.Adapter<Schoollistadapter.V
     @Override
     public void onBindViewHolder(@NonNull Schoollistadapter.ViewHolder holder, int position) {
 
-        final Schoollistdetails listdetails = profilelist.get(position);
+        final DataItem listdetails = profilelist.get(position);
 
         holder.schoolname.setText(listdetails.getName());
         holder.principalname.setText(listdetails.getPrincipalName());
         holder.assisname.setText(listdetails.getAssistantName());
-        holder.cityname.setText(listdetails.getState());
-        holder.paycentrename.setText(listdetails.getPayCenter());
+        holder.cityname.setText(listdetails.getCombo().getDistrictName());
+        holder.paycentrename.setText(listdetails.getCombo().getPayCenterName());
         holder.mobile1.setText(listdetails.getMobile1());
         holder.mobile2.setText(listdetails.getMobile2());
 
@@ -110,7 +108,7 @@ public class Schoollistadapter  extends RecyclerView.Adapter<Schoollistadapter.V
         return profilelist.size();
     }
 
-    public void addData(List<Schoollistdetails> data) {
+    public void addData(List<DataItem> data) {
         profilelist.clear();
         profilelist.addAll(data);
         notifyDataSetChanged();
@@ -138,7 +136,7 @@ public class Schoollistadapter  extends RecyclerView.Adapter<Schoollistadapter.V
     }
 
     public interface onItemClickLisnear {
-        void onClickEvent(int position, Schoollistdetails mPlanData,String action);
+        void onClickEvent(int position, DataItem mPlanData, String action);
     }
 
     public void setItemOnClickEvent(onItemClickLisnear mOnItemClickLisnear) {

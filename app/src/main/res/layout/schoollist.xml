@@ -70,14 +70,14 @@
         <TextView
             android:id="@+id/cityname"
             android:layout_marginLeft="@dimen/_10sdp"
-            android:text="School Name"
+            android:text="City Name"
             android:textSize="@dimen/_11sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/paycentrename"
-            android:text="School Name"
+            android:text="payCenterName"
             android:layout_marginLeft="@dimen/_10sdp"
             android:textSize="@dimen/_11sdp"
             android:layout_width="match_parent"

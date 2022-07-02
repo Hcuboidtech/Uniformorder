@@ -107,10 +107,6 @@ public class Paymentpending extends BaseFragment implements OnItemClicked {
         recylceorderlist.setAdapter(profilelistadapter);
         // Inflate the layout for this fragment
 
-
-
-
-
         edtsearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

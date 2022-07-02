@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.uniformorder.uniformorderr.R;
+import com.uniformorder.uniformorderr.model.DataItem;
 import com.uniformorder.uniformorderr.model.Schoollistdetails;
 
 import java.util.List;
@@ -15,9 +16,9 @@ import java.util.List;
 public class Countryadapter extends ArrayAdapter {
     private final LayoutInflater mInflater;
     private final Context mContext;
-    private final List<Schoollistdetails> items;
+    private final List<DataItem> items;
     private final int mResource;
-    public Countryadapter(Context context, int resource, List<Schoollistdetails> data) {
+    public Countryadapter(Context context, int resource, List<DataItem> data) {
         super(context, resource, data);
 
         mContext = context;
@@ -39,7 +40,7 @@ public class Countryadapter extends ArrayAdapter {
     private View createItemView(int position, View convertView, ViewGroup parent) {
         final View view = mInflater.inflate(mResource, parent, false);
         TextView textViewName = view.findViewById(R.id.text1);
-        final Schoollistdetails mCommonListData = items.get(position);
+        final DataItem mCommonListData = items.get(position);
         textViewName.setText(mCommonListData.getName());
 
         return view;

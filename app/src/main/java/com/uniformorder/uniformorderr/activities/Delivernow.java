@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -99,13 +100,14 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
         loginid = UserPreference.getInstance(Delivernow.this).getLoginId();
 
         if (extras != null) {
-            order_id = String.valueOf(extras.getInt("orderid"));
+            order_id = String.valueOf(extras.getString("orderid"));
             ordertype = extras.getString("ordertype");
             user = (DataItem) extras.getSerializable("user");
             txtschoolname.setText("School Name: " + user.getSchool().getName());
             totalpayable.setText("Total Payable amount " + user.getPendingAmount() + " INR");
             txtorder.setText("Order No. " + order_id);
             Log.d("orderType",ordertype);
+            Log.d("orderid Recived",order_id);
         }
 
         profilelistadapter = new Deliverorderadapter(Delivernow.this);
@@ -123,39 +125,47 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
             @Override
             public void onClick(View view) {
                 Log.d("DILIVERY ->", "API CLICKED 1");
-                if (profilelistadapter.getItemCount() != 0) {
-                    Log.d("DILIVERY ->", "API CLICKED 2");
-                    std = new ArrayList<>();
-                    boys = new ArrayList<>();
-                    girls = new ArrayList<>();
-                    stdid = new ArrayList<>();
+                String input_amount = edtpayment.getText().toString();
+                Log.d("input amount ->", input_amount);
+                if (!input_amount.matches("")) {
+                    Log.d("input amount ->", "NotEmpty");
+                    Log.d("input amount ->", input_amount);
+                    if (profilelistadapter.getItemCount() != 0) {
+                        Log.d("DILIVERY ->", "API CLICKED 2");
+                        std = new ArrayList<>();
+                        boys = new ArrayList<>();
+                        girls = new ArrayList<>();
+                        stdid = new ArrayList<>();
 
-                    Log.e("Tag", "ARRAY SIZE" + profilelistadapter.getSelectedArray().size());
+                        Log.e("Tag", "ARRAY SIZE" + profilelistadapter.getSelectedArray().size());
 
-                    for (int i = 0; i < profilelistadapter.getSelectedArray().size(); i++) {
-                        std.add(Integer.valueOf(profilelistadapter.getSelectedArray().get(i).getStandard()));
-                        stdid.add(Integer.valueOf(profilelistadapter.getSelectedArray().get(i).getStandardId()));
-                        boys.add(Integer.valueOf(profilelistadapter.getSelectedArray().get(i).getBoys()));
-                        girls.add(Integer.valueOf(profilelistadapter.getSelectedArray().get(i).getGirls()));
-                    }
-                    showHideProgressDialog(true);
-                    Log.d("DELIVERY ->", "API CLICKED");
-                    int edit = Integer.parseInt(edtpayment.getText().toString());
-                    Float payamt = Float.parseFloat(user.getPendingAmount());
-                    int am =  Math.round(payamt);
-                    Log.d("edit ->", String.valueOf(edit));
-                    Log.d("payableFloat ->", String.valueOf(payamt));
-                    Log.d("payableInt ->", String.valueOf(am));
-                    if (edit > am){
-                        Log.d("DILIVERY ->", "value is larger");
-                        showHideProgressDialog(false);
-                        Toast.makeText(Delivernow.this, "Invalid Payment", Toast.LENGTH_SHORT).show();
-                       showHideProgressDialog(false);
-                    }else{
-                        editorder();
+                        for (int i = 0; i < profilelistadapter.getSelectedArray().size(); i++) {
+                            std.add(Integer.valueOf(profilelistadapter.getSelectedArray().get(i).getStandard()));
+                            stdid.add(Integer.valueOf(profilelistadapter.getSelectedArray().get(i).getStandardId()));
+                            boys.add(Integer.valueOf(profilelistadapter.getSelectedArray().get(i).getBoys()));
+                            girls.add(Integer.valueOf(profilelistadapter.getSelectedArray().get(i).getGirls()));
+                        }
+                        showHideProgressDialog(true);
+                        Log.d("DELIVERY ->", "API CLICKED");
+                        int edit = Integer.parseInt(edtpayment.getText().toString());
+                        Float payamt = Float.parseFloat(user.getPendingAmount());
+                        int am = Math.round(payamt);
+                        Log.d("edit ->", String.valueOf(edit));
+                        Log.d("payableFloat ->", String.valueOf(payamt));
+                        Log.d("payableInt ->", String.valueOf(am));
+                        if (edit > am) {
+                            Log.d("DILIVERY ->", "value is larger");
+                            showHideProgressDialog(false);
+                            Toast.makeText(Delivernow.this, "Invalid Payment", Toast.LENGTH_SHORT).show();
+                            showHideProgressDialog(false);
+                        } else {
+                            editorder();
+                        }
+                    } else {
+                        Log.d("Delevery Adapter", "IS EMPTY");
                     }
                 }else{
-                    Log.d("Delevery Adapter","IS EMPTY");
+                    Toast.makeText(Delivernow.this, "Invalid Input", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -215,6 +225,8 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
                                 i.putExtra("isComp","Yes");
                                 startActivity(i);
                                 finish();
+
+                                // order is fully delivered //
 
                             } else {
                                 showHideProgressDialog(false);

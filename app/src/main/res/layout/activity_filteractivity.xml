@@ -115,7 +115,6 @@
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold" />
 
-
             <RelativeLayout
                 android:id="@+id/rldistrictSelect"
                 android:layout_width="match_parent"
@@ -134,18 +133,18 @@
                     android:spinnerMode="dropdown"
                     android:visibility="invisible" />
 
-                <TextView
-                    android:id="@+id/district_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
-                    android:backgroundTint="@color/darkblue"
-                    android:editable="false"
-                    android:gravity="center_vertical"
-                    android:padding="@dimen/_9sdp"
-                    android:textColor="@color/darkblue"
-                    android:textColorHint="@color/darkblue"
-                    android:textSize="@dimen/_13sdp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/district_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:backgroundTint="@color/darkblue"
+                        android:editable="false"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/_9sdp"
+                        android:textColor="@color/darkblue"
+                        android:textColorHint="@color/darkblue"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="@dimen/_20sdp"
@@ -160,7 +159,32 @@
                     android:tintMode="@color/darkblue"
                     tools:ignore="UseAppTint" />
 
+
             </RelativeLayout>
+            <LinearLayout
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:gravity="end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textAlignment="center"
+                    android:padding="@dimen/_5sdp"
+                    android:textSize="@dimen/_12sdp"
+                    android:text="Select All Pay Center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </TextView>
+                <CheckBox
+                    android:id="@+id/selectAllDis_checkBox"
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="item_CLicked">
+                </CheckBox>
+
+            </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

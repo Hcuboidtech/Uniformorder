@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,19 +12,14 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-import androidx.appcompat.widget.AppCompatSpinner;
-
 import com.uniformorder.uniformorderr.R;
 import com.uniformorder.uniformorderr.adapter.DistrictAdapter;
 import com.uniformorder.uniformorderr.adapter.PayingCenterAdapter;
@@ -50,6 +46,7 @@ import retrofit2.Response;
 
 public class filteractivity extends BaseAppCompatActivity {
     TextView edtstartdate, edtendtdate,districtText,payCenterText;
+    CheckBox allDistrictChecked;
     EditText editTextDistrict,editTextPayCenter;
     ImageView img_back;
     Calendar c = Calendar.getInstance();
@@ -91,7 +88,7 @@ public class filteractivity extends BaseAppCompatActivity {
         UserPreference.getInstance(mBaseAppCompatActivity).setSelectedDistrict("");
         UserPreference.getInstance(mBaseAppCompatActivity).setSelectedPayCenter("");
          loginId = UserPreference.getInstance(mBaseAppCompatActivity).getLoginId();
-         // setContentView(R.layout.activity_filteractivity);
+     //     setContentView(R.layout.activity_filteractivity);
          districtText = findViewById(R.id.district_text);
          payCenterText = findViewById(R.id.paycentrename_text);
          rldistrict = findViewById(R.id.rldistrictSelect);
@@ -103,6 +100,7 @@ public class filteractivity extends BaseAppCompatActivity {
         edtendtdate = findViewById(R.id.edtendtdate);
         img_back = findViewById(R.id.img_back);
         btnDownload = findViewById(R.id.btnDownload);
+        allDistrictChecked = findViewById(R.id.selectAllDis_checkBox);
 
         getDistrict();
 
@@ -146,93 +144,63 @@ public class filteractivity extends BaseAppCompatActivity {
                                           int monthOfYear, int dayOfMonth) {
                         edtstartdate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
                         c.set(year, monthOfYear, dayOfMonth);
-                        strstartdate = String.valueOf(dayOfMonth) + "-" + String.valueOf(monthOfYear + 1) + "-" + String.valueOf(year);
+                        strstartdate = String.valueOf(year) + "-" + String.valueOf(monthOfYear + 1) + "-" + String.valueOf(dayOfMonth);
+                     //   openEndDateDialog();
                     }
                 }, mYear, mMonth, mDay);
-                //dpd.getDatePicker().setMaxDate(System.currentTimeMillis());
-                dpd.show();
-            }
-        });
-        edtendtdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dpd = new DatePickerDialog(filteractivity.this, new DatePickerDialog.OnDateSetListener() {
+                dpd.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
-                        edtendtdate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                        c.set(year, monthOfYear, dayOfMonth);
-                        strenddate = String.valueOf(dayOfMonth) + "-" + String.valueOf(monthOfYear + 1) + "-" + String.valueOf(year);
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        Log.d("Dialog Dismiss","Dialog Dismiss");
+                        dpd.dismiss();
+                        openEndDateDialog();
                     }
-                }, mYear, mMonth, mDay);
+                });
                 //dpd.getDatePicker().setMaxDate(System.currentTimeMillis());
                 dpd.show();
-
             }
         });
+
+//        edtendtdate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mYear = c.get(Calendar.YEAR);
+//                mMonth = c.get(Calendar.MONTH);
+//                mDay = c.get(Calendar.DAY_OF_MONTH);
+//
+//                DatePickerDialog dpd = new DatePickerDialog(filteractivity.this, new DatePickerDialog.OnDateSetListener() {
+//
+//                    @Override
+//                    public void onDateSet(DatePicker view, int year,
+//                                          int monthOfYear, int dayOfMonth) {
+//                        edtendtdate.setText(year + "/" + (monthOfYear + 1) + "/" +dayOfMonth);
+//                        c.set(year, monthOfYear, dayOfMonth);
+//                        strenddate = String.valueOf(year) + "-" + String.valueOf(monthOfYear + 1) + "-" + String.valueOf(dayOfMonth);
+//                        Toast.makeText(filteractivity.this, "okay button clicked", Toast.LENGTH_SHORT).show();
+//                    }
+//                    }, mYear, mMonth, mDay);
+//
+//                //dpd.getDatePicker().setMaxDate(System.currentTimeMillis());
+//
+//
+//                dpd.show();
+//
+//            }
+//
+//
+//        });
 
 
         btnDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (allDistrictChecked.isChecked()) {
+                    callExcelExportAllPayCenter();
+                }
+                if(!allDistrictChecked.isChecked()){
+                    callExcelExportApi();
+                }
                // showHideProgressDialog(true);
-                String paycenter = payCenterText.getText().toString();
-                String district = passedDistrict;
-                String loginid = UserPreference.getInstance(mBaseAppCompatActivity).getLoginId();
-
-                APIInterface apiInterface = APIClient.getClient(filteractivity.this).create(APIInterface.class);
-                Call<filtermodel> excelexport = apiInterface.excelexport(loginid, strstartdate, strenddate,district,paycenter);
-                excelexport.enqueue(new Callback<filtermodel>() {
-                    @Override
-                    public void onResponse(Call<filtermodel> call, Response<filtermodel> response) {
-
-                        if(response.isSuccessful()) {
-                            if (response.body() != null) {
-                                if (response.body().getStatus().toString().equals("true")) {
-//                                    showHideProgressDialog(true);
-                                    Log.d("Catch ->","catch0");
-                                    URL = response.body().getData();
-                                   // new DownloadTask(filteractivity.this, URL);
-                                    DownloadFile(URL);
-                                    Log.d("Catch ->","catch01");
-                                    Log.d("Catch ->","catch01");
-                                } else {
-                                    showHideProgressDialog(false);
-                                    Log.d("Catch ->","catch02");
-                                }
-                            } else {
-                                Log.d("Catch ->","catch03");
-                                showHideProgressDialog(false);
-                            }
-                        }else{
-                            Log.d("Catch ->","catch04");
-                            showHideProgressDialog(false);
-                            try {
-                                Log.d("Catch ->","catch05");
-                                JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                Toast.makeText(filteractivity.this, jObjError.getString("message"), Toast.LENGTH_SHORT).show();
-                                Log.d("Catch ->","catch1");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Log.d("Catch ->","catch1");
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                hideProgressDialog();
-                                Log.d("Catch ->","catch2");
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<filtermodel> call, Throwable t) {
-                        Log.d("Catch ->","catch200");
-                        hideProgressDialog();
-                    }
-                });
             }
         });
 
@@ -269,9 +237,15 @@ public class filteractivity extends BaseAppCompatActivity {
                 if (isChecked1){
                     payCenterText.setText(payCenter);
                     UserPreference.getInstance(mBaseAppCompatActivity).setSelectedPayCenter(payCenter);
+                  if (allDistrictChecked.isChecked()){
+                      payCenterText.setText("");
+                  }
                 }else{
                     selectedPayCenter =UserPreference.getInstance(mBaseAppCompatActivity).getSelectedPayCenter();
                     payCenterText.setText(selectedPayCenter);
+                    if (allDistrictChecked.isChecked()){
+                        payCenterText.setText("");
+                    }
                 }
           }
 
@@ -281,7 +255,6 @@ public class filteractivity extends BaseAppCompatActivity {
           }
       });
     }
-
     private void DownloadFile(String url) {
         progressDialog.setMessage("Downloading...");
         progressDialog.setCancelable(false);
@@ -401,5 +374,149 @@ public class filteractivity extends BaseAppCompatActivity {
         super.onPause();
         Log.d("On Pause","Called");
         UserPreference.getInstance(mBaseAppCompatActivity).setSelectedDistrict("");
+    }
+    public void item_CLicked(View view){
+        if (allDistrictChecked.isChecked()){
+          payCenterText.setText("");
+        }
+        if (!allDistrictChecked.isChecked()){
+            districtText.setText("");
+            payCenterText.setText("");
+        }
+    }
+
+     void callExcelExportApi(){
+
+         String paycenter = payCenterText.getText().toString();
+         String district = passedDistrict;
+         String loginid = UserPreference.getInstance(mBaseAppCompatActivity).getLoginId();
+
+         APIInterface apiInterface = APIClient.getClient(filteractivity.this).create(APIInterface.class);
+         Call<filtermodel> excelexport = apiInterface.excelexport(loginid, strstartdate, strenddate,district,paycenter);
+         excelexport.enqueue(new Callback<filtermodel>() {
+             @Override
+             public void onResponse(Call<filtermodel> call, Response<filtermodel> response) {
+
+                 if(response.isSuccessful()) {
+                     if (response.body() != null) {
+                         if (response.body().getStatus().toString().equals("true")) {
+//                                    showHideProgressDialog(true);
+                             URL = response.body().getData();
+                             // new DownloadTask(filteractivity.this, URL);
+                             DownloadFile(URL);
+                             Log.d("Catch ->","catch01");
+                             Log.d("Catch ->","catch01");
+                         } else {
+                             showHideProgressDialog(false);
+                             Log.d("Catch ->","catch02");
+                         }
+                     } else {
+                         Log.d("Catch ->","catch03");
+                         showHideProgressDialog(false);
+                     }
+                 }else{
+                     Log.d("Catch ->","catch04");
+                     showHideProgressDialog(false);
+                     try {
+                         Log.d("Catch ->","catch05");
+                         JSONObject jObjError = new JSONObject(response.errorBody().string());
+                         Toast.makeText(filteractivity.this, jObjError.getString("message"), Toast.LENGTH_SHORT).show();
+                         Log.d("Catch ->","catch1");
+                     } catch (JSONException e) {
+                         e.printStackTrace();
+                         Log.d("Catch ->","catch1");
+                     } catch (IOException e) {
+                         e.printStackTrace();
+                         hideProgressDialog();
+                         Log.d("Catch ->","catch2");
+                     }
+                 }
+             }
+
+             @Override
+             public void onFailure(Call<filtermodel> call, Throwable t) {
+                 Log.d("Catch ->","catch200");
+                 hideProgressDialog();
+             }
+         });
+
+     }
+     void callExcelExportAllPayCenter(){
+         //String paycenter = payCenterText.getText().toString();
+         String district = passedDistrict;
+         String loginid = UserPreference.getInstance(mBaseAppCompatActivity).getLoginId();
+         Log.d("Distric",district);
+         APIInterface apiInterface = APIClient.getClient(filteractivity.this).create(APIInterface.class);
+         Call<filtermodel> excelexport = apiInterface.excelExportAllPayCenter(loginid,"2022-6-1","2022-6-17",district);
+         excelexport.enqueue(new Callback<filtermodel>() {
+             @Override
+             public void onResponse(Call<filtermodel> call, Response<filtermodel> response) {
+
+                 if(response.isSuccessful()) {
+                     if (response.body() != null) {
+                         if (response.body().getStatus().toString().equals("true")) {
+//                                    showHideProgressDialog(true);
+                             Log.d("ALL DIST","SUCCSEESSFUL");
+                             URL = response.body().getData();
+                             // new DownloadTask(filteractivity.this, URL);
+                             DownloadFile(URL);
+                             Log.d("Catch ->","catch01");
+                             Log.d("Catch ->","catch01");
+                         } else {
+                             showHideProgressDialog(false);
+                             Log.d("Catch ->","catch02");
+                         }
+                     } else {
+                         Log.d("Catch ->","catch03");
+                         showHideProgressDialog(false);
+                     }
+                 }else{
+                     Log.d("Catch ->","catch04");
+                     showHideProgressDialog(false);
+                     try {
+                         Log.d("Catch ->","catch05");
+                         JSONObject jObjError = new JSONObject(response.errorBody().string());
+                         Toast.makeText(filteractivity.this, jObjError.getString("message"), Toast.LENGTH_SHORT).show();
+                         Log.d("Catch ->","catch1");
+                     } catch (JSONException e) {
+                         e.printStackTrace();
+                         Log.d("Catch ->","catch1");
+                     } catch (IOException e) {
+                         e.printStackTrace();
+                         hideProgressDialog();
+                         Log.d("Catch ->","catch2");
+                     }
+                 }
+             }
+
+             @Override
+             public void onFailure(Call<filtermodel> call, Throwable t) {
+                 Log.d("Catch ->","catch200");
+                 hideProgressDialog();
+             }
+         });
+     }
+    void openEndDateDialog(){
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dpd = new DatePickerDialog(filteractivity.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year,
+                                  int monthOfYear, int dayOfMonth) {
+                edtendtdate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                c.set(year, monthOfYear, dayOfMonth);
+                strenddate = String.valueOf(year) + "-" + String.valueOf(monthOfYear + 1) + "-" + String.valueOf(dayOfMonth);
+                Toast.makeText(filteractivity.this, "okay button clicked", Toast.LENGTH_SHORT).show();
+            }
+        }, mYear, mMonth, mDay);
+
+        //dpd.getDatePicker().setMaxDate(System.currentTimeMillis());
+
+
+        dpd.show();
+
     }
 }

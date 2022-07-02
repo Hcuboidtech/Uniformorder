@@ -152,7 +152,6 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
         showHideProgressDialog(true);
 
         APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
-        Log.d("DXX ->",strsearch);
         Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "pending", strsearch);
         userlist.enqueue(new Callback<ResponseOrderList>() {
             @Override

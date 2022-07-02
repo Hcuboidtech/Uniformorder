@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.uniformorder.uniformorderr.R;
 import com.uniformorder.uniformorderr.model.Registermodel;
+import com.uniformorder.uniformorderr.model.ResponseSchoolList;
 import com.uniformorder.uniformorderr.model.Schoollistmodel;
 import com.uniformorder.uniformorderr.retrofit.APIClient;
 import com.uniformorder.uniformorderr.retrofit.APIInterface;
@@ -166,24 +167,24 @@ public class Addschool extends BaseAppCompatActivity {
     private void editschool(String schoollid) {
         showHideProgressDialog(true);
         APIInterface apiInterface = APIClient.getClient(this).create(APIInterface.class);
-        Call<Schoollistmodel> schoollist = apiInterface.schoollist(loginid, "20", "0", search_value);
-        schoollist.enqueue(new Callback<Schoollistmodel>() {
+        Call<ResponseSchoolList> schoollist = apiInterface.schoollist(loginid, "20", "0", search_value);
+        schoollist.enqueue(new Callback<ResponseSchoolList>() {
             @Override
-            public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
+            public void onResponse(Call<ResponseSchoolList> call, Response<ResponseSchoolList> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        if (response.body().getStatus().toString().equals("true")) {
+                        if (response.body().isStatus()) {
                             showHideProgressDialog(false);
                             for (int i = 0; i < response.body().getData().size(); i++) {
                                 if (response.body().getData().get(i).getId() == Integer.valueOf(schoollid)) {
                                     edtassiname.setText(response.body().getData().get(i).getAssistantName());
                                     edtschoolname.setText(response.body().getData().get(i).getName());
                                     edtprincipalname.setText(response.body().getData().get(i).getPrincipalName());
-                                    edtpayname.setText(response.body().getData().get(i).getPayCenter());
-                                    edtcityname.setText(response.body().getData().get(i).getState());
+                                    edtpayname.setText(response.body().getData().get(i).getCombo().getPayCenterName());
+                                    edtcityname.setText(response.body().getData().get(i).getCombo().getVillageName());
                                     edtmobile1.setText(response.body().getData().get(i).getMobile1());
                                     edtmobile2.setText(response.body().getData().get(i).getMobile2());
-                                    edtdistrictname.setText(response.body().getData().get(i).getTaluka());
+                                    edtdistrictname.setText(response.body().getData().get(i).getCombo().getDistrictName());
                                 }
                             }
                         } else {
@@ -206,7 +207,7 @@ public class Addschool extends BaseAppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Schoollistmodel> call, Throwable t) {
+            public void onFailure(Call<ResponseSchoolList> call, Throwable t) {
                 showHideProgressDialog(false);
                 Toast.makeText(Addschool.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }

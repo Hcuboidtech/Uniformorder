@@ -29,9 +29,6 @@ public class EditOrderListViewModel extends ViewModel {
     public  String order_id1 ="",login_id1="",patternId1="",rate11="",rate21="",rate31="",total_amount1=""
             ,deposite1="",school_Id1="";
 
-   public void getData(){
-
-    }
      ArrayList<String> returnData(){
 
        return data;
@@ -71,6 +68,10 @@ public class EditOrderListViewModel extends ViewModel {
        }
      //  return edit_saveOrder;
      }
+     public void clearViewModelData(){
+           data.clear();
+           edit_saveOrder.clear();
+     }
     public void saveData(String order_id,String school_id,
                          String login_id, String pattern_id,
                          String rate1, String rate2,String rate3, String total_amount,
@@ -94,6 +95,7 @@ public class EditOrderListViewModel extends ViewModel {
         data.add(this.patternId1);
         data.add(this.rate11);
         data.add(this.rate21);
+        data.add(this.rate31);
         data.add(this.total_amount1);
         data.add(this.deposite1);
         for (int i= 0; i<data.size(); i++){

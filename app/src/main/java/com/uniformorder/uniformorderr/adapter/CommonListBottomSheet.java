@@ -92,127 +92,127 @@ public class CommonListBottomSheet extends BaseBottomSheetDialogFragment {
 
     }
 
-    private void patternlist() {
-
-        String loginid = UserPreference.getInstance(getContext()).getLoginId();
-        ;
-
-        // showProgressDialog(true);
-
-        APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
-        Call<Schoollistmodel> schoollist = apiInterface.patternlist(loginid, "10", "0");
-        schoollist.enqueue(new Callback<Schoollistmodel>() {
-            @Override
-            public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
-
-                //    hideSwipeRefreshView();
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        if (response.body().getStatus().toString().equals("true")) {
-                            //     showProgressDialog(false);
-
-                            if (response.body().getData() != null && response.body().getData().size() != 0) {
-                                //list
-                                if (mListData != null) {
-                                    mListData.clear();
-                                }
-                                mListData.addAll(response.body().getData());
-
-                                Countryadapter customAdapter = new Countryadapter(getActivity(), R.layout.spinnerlayout, mListData);
-                                if (spinnerschoollist != null) {
-                                    spinnerschoollist.setAdapter(customAdapter);
-                                }
-                            }
-
-
-                        } else {
-                            // showProgressDialog(false);
-                        }
-                    } else {
-                        //showProgressDialog(false);
-                    }
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getActivity(), jObjError.getString("message"), Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<Schoollistmodel> call, Throwable t) {
-
-            }
-        });
-
-
-    }
+   private void patternlist() {
+//
+//        String loginid = UserPreference.getInstance(getContext()).getLoginId();
+//        ;
+//
+//        // showProgressDialog(true);
+//
+//        APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
+//        Call<Schoollistmodel> schoollist = apiInterface.patternlist(loginid, "10", "0");
+//        schoollist.enqueue(new Callback<Schoollistmodel>() {
+//            @Override
+//            public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
+//
+//                //    hideSwipeRefreshView();
+//                if (response.isSuccessful()) {
+//                    if (response.body() != null) {
+//                        if (response.body().getStatus().toString().equals("true")) {
+//                            //     showProgressDialog(false);
+//
+//                            if (response.body().getData() != null && response.body().getData().size() != 0) {
+//                                //list
+//                                if (mListData != null) {
+//                                    mListData.clear();
+//                                }
+//                                mListData.addAll(response.body().getData());
+//
+//                                Countryadapter customAdapter = new Countryadapter(getActivity(), R.layout.spinnerlayout, mListData);
+//                                if (spinnerschoollist != null) {
+//                                    spinnerschoollist.setAdapter(customAdapter);
+//                                }
+//                            }
+//
+//
+//                        } else {
+//                            // showProgressDialog(false);
+//                        }
+//                    } else {
+//                        //showProgressDialog(false);
+//                    }
+//                } else {
+//                    try {
+//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                        Toast.makeText(getActivity(), jObjError.getString("message"), Toast.LENGTH_SHORT).show();
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Schoollistmodel> call, Throwable t) {
+//
+//            }
+//        });
+//
+//
+   }
 
     private void schoollist() {
-        //  loginid=UserPreference.getInstance(getContext()).getLoginId();
-        String loginid = UserPreference.getInstance(getContext()).getLoginId();
-        ;
+//          loginid=UserPreference.getInstance(getContext()).getLoginId();
+//        String loginid = UserPreference.getInstance(getContext()).getLoginId();
+//        ;
+//
+//         showProgressDialog(true);
+//
+//        APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
+//        Call<Schoollistmodel> schoollist = apiInterface.schoollist(loginid, "10", "0", "");
+//        schoollist.enqueue(new Callback<Schoollistmodel>() {
+//            @Override
+//            public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
+//
+//                    hideSwipeRefreshView();
+//
+//                if (response.isSuccessful()) {
+//                    if (response.body() != null) {
+//                        if (response.body().getStatus().toString().equals("true")) {
+//                                 showProgressDialog(false);
+//
+//                            if (response.body().getData() != null && response.body().getData().size() != 0) {
+//                                list
+//                                if (mListData != null) {
+//                                    mListData.clear();
+//                                }
+//                                mListData.addAll(response.body().getData());
+//
+//                                Countryadapter customAdapter = new Countryadapter(getActivity(), R.layout.spinnerlayout, mListData);
+//                                if (spinnerschoollist != null) {
+//                                    spinnerschoollist.setAdapter(customAdapter);
+//                                }
+//                            }
+//
+//
+//                        } else {
+//                             showProgressDialog(false);
+//                        }
+//                    } else {
+//                        showProgressDialog(false);
+//                    }
+//                } else {
+//                    try {
+//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                        Toast.makeText(getActivity(), jObjError.getString("message"), Toast.LENGTH_SHORT).show();
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
 
-        // showProgressDialog(true);
 
-        APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
-        Call<Schoollistmodel> schoollist = apiInterface.schoollist(loginid, "10", "0", "");
-        schoollist.enqueue(new Callback<Schoollistmodel>() {
-            @Override
-            public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
+//            }
 
-                //    hideSwipeRefreshView();
-
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        if (response.body().getStatus().toString().equals("true")) {
-                            //     showProgressDialog(false);
-
-                            if (response.body().getData() != null && response.body().getData().size() != 0) {
-                                //list
-                                if (mListData != null) {
-                                    mListData.clear();
-                                }
-                                mListData.addAll(response.body().getData());
-
-                                Countryadapter customAdapter = new Countryadapter(getActivity(), R.layout.spinnerlayout, mListData);
-                                if (spinnerschoollist != null) {
-                                    spinnerschoollist.setAdapter(customAdapter);
-                                }
-                            }
-
-
-                        } else {
-                            // showProgressDialog(false);
-                        }
-                    } else {
-                        //showProgressDialog(false);
-                    }
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getActivity(), jObjError.getString("message"), Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<Schoollistmodel> call, Throwable t) {
-
-            }
-        });
+//            @Override
+//            public void onFailure(Call<Schoollistmodel> call, Throwable t) {
+//
+//            }
+//        });
 
 
     }

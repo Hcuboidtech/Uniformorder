@@ -95,6 +95,8 @@ public class MainActivity extends BaseAppCompatActivity {
         addstd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("LOGCH ->","School Clicked");
+
                 startActivity(new Intent(MainActivity.this, Schoollist.class));
             }
         });

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +24,10 @@ import com.uniformorder.uniformorderr.adapter.Addstdadapter;
 import com.uniformorder.uniformorderr.adapter.CommonListBottomSheet;
 import com.uniformorder.uniformorderr.adapter.Countryadapter;
 import com.uniformorder.uniformorderr.adapter.patternadapter;
+import com.uniformorder.uniformorderr.model.DataItem;
 import com.uniformorder.uniformorderr.model.EditOrderResponse;
+import com.uniformorder.uniformorderr.model.NDSpinner;
+import com.uniformorder.uniformorderr.model.ResponseSchoolList;
 import com.uniformorder.uniformorderr.model.SaveorderRequestdetails;
 import com.uniformorder.uniformorderr.model.Schoollistdetails;
 import com.uniformorder.uniformorderr.model.Schoollistmodel;
@@ -67,10 +68,10 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
     String login_id = "0", school_id = "0", pattern_id = "0", rate1 = "1", rate2 = "1", rate3="1", deposite = "0", total_amount = "0";
     String selectschoolid = "0", selectpatternid = "0", search_value = " ";
     ImageView img_back, plusschool, pluspattern, plusstudent;
-    Spinner patternspinner, schoollspinner;
+    NDSpinner patternspinner, schoollspinner;
     String selectedsschoolname = "", selectedpatternname = "";
 
-    List<Schoollistdetails> mListData;
+    List<DataItem> mListData;
     List<Schoollistdetails> patterndata;
 
 
@@ -78,6 +79,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
     List<Integer> std;
     List<Integer> boys;
     List<Integer> girls;
+    List<Integer>stdId;
     LinearLayoutManager cartlayout;
     Addstdadapter cartlistAdapter;
     TextView txttotalstdent, totalpayable;
@@ -110,7 +112,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         sharedPreferenceUtils = getSharedPreferences("Mypref", MODE_PRIVATE);
         myEdit = sharedPreferenceUtils.edit();
         parcebelCheck = getIntent();
-      //      setContentView(R.layout.activity_quickorderforrm);
+        //  setContentView(R.layout.activity_quickorderforrm);
         editOrderViewModel = new ViewModelProvider(this).get(EditOrderListViewModel.class);
         edtschoolname = findViewById(R.id.edtschoolname);
         edtpatternname = findViewById(R.id.edtpatternname);
@@ -128,15 +130,15 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         edtrrate1 = findViewById(R.id.edtrrate1);
         edtrrate2 = findViewById(R.id.edtrrate2);
         edtrrate3 = findViewById(R.id.edtrrate3);
-        schoollspinner = findViewById(R.id.schoollspinner);
-        patternspinner = findViewById(R.id.patternspinner);
+        schoollspinner = (NDSpinner)findViewById(R.id.schoollspinner);
+        patternspinner = (NDSpinner) findViewById(R.id.patternspinner);
         schooltxt = findViewById(R.id.schooltxt);
         patterntxt = findViewById(R.id.patterntxt);
         plusschool = findViewById(R.id.plusschool);
         pluspattern = findViewById(R.id.pluspattern);
         plusstudent = findViewById(R.id.plusstudent);
 
-        mListData = new ArrayList<>();
+        mListData = new ArrayList<com.uniformorder.uniformorderr.model.DataItem>();
         patterndata = new ArrayList<>();
         saveorderRequest = new ArrayList<SaveorderRequestdetails>();
 
@@ -147,6 +149,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         std = new ArrayList<>();
         boys = new ArrayList<>();
         girls = new ArrayList<>();
+        stdId = new ArrayList<>();
 
         schoollist();
         patternlist();
@@ -155,32 +158,43 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         if (intent != null) {
             String sklanem = intent.getString("SchoolName", "Q");
             if (!sklanem.equals("Q")) {
-
+                myEdit.putString("mode","edit");
+      //////// this means ur editing the order /// cuz u had a school name which u didn't get in
+        // quick order
+                addtxtschool.setVisibility(View.INVISIBLE);
+                plusschool.setVisibility(View.INVISIBLE);
+                pluspattern.setVisibility(View.INVISIBLE);
+                addtxtpattern.setVisibility(View.INVISIBLE);
                 if (intent.getString("isEdit").equals("order")) {
 
                     if (parcebelCheck.hasExtra("EditData")) {
+                        for (int i = 0; i < Constants.editcardList.size(); i++) {
+                            Log.d("REC STD_ID->",Constants.editcardList.get(i).getStandardId().toString());
+                           //  stdId.add(Constants.editcardList.get(i).getStandardId());
+                        }
                         Constants.editcardList = getIntent().getParcelableArrayListExtra("EditData");
                         ArrayList<SaveorderRequestdetails> list = Constants.editcardList;
-                        Log.d("FETCEDH BYS", list.get(0).getBoys().toString());
+                   //     Log.d("FETCEDH BYS", list.get(0).getBoys().toString());
                         String order_idp, schhool_idp, login_idp, pattern_idp,
                                 rate1p, rate2p,rate3p,total_amountp, depositep,
-                                patternnamep;
+                                patternnamep,pendingAMT;
 
                         patternnamep = intent.getString("PatternName", "n");
                         Log.d("PatternRecived->", patternnamep);
                         patternName = patternnamep;
-                        order_idp = intent.getString("orderId", "n");
-                        schhool_idp = intent.getString("idSchool", "n");
+                        myEdit.putString("patternName",patternnamep);
+                        order_idp = String.valueOf(intent.getInt("orderId", 0));
+                        schhool_idp = String.valueOf(intent.getInt("idSchool", 0));
                         login_idp = intent.getString("loginId", "n");
                         pattern_idp = intent.getString("idpattern", "n");
                         rate1p = intent.getString("rate1", "n");
                         rate2p = intent.getString("rate2", "n");
                         rate3p = intent.getString("rate3","n");
+                        pendingAMT = intent.getString("pendingamt","n");
                         total_amountp = intent.getString("totalam", "n");
                         depositep = intent.getString("deposite", "n");
-                        editOrderViewModel.savePrcebleObj(list);
-                        editOrderViewModel.saveData(order_idp, schhool_idp, login_idp, pattern_idp, rate1p, rate2p,rate3p, total_amountp, depositep);
 
+                       // editOrderViewModel.saveData(order_idp, schhool_idp, login_idp, pattern_idp, rate1p, rate2p,rate3p, total_amountp, depositep);
                         myEdit.putString("orderid", order_idp);
                         myEdit.putString("schoolid", schhool_idp);
                         myEdit.putString("loginid", login_idp);
@@ -190,11 +204,23 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                         myEdit.putString("rate3",rate3p);
                         myEdit.putString("totalam", total_amountp);
                         myEdit.putString("deposite", depositep);
-                        myEdit.apply();
+                        myEdit.putString("pendingamt",pendingAMT);
+                        myEdit.commit();
+                        Log.d("PatternSAVED",sharedPreferenceUtils.getString("patternName","n"));
 
+                          if (rate2p.equals("n")){
+                              rate2p = "0";
+                          }
+                          if (rate1p.equals("n")){
+                              rate1p = "0";
+                          }
+                          if (rate3p.equals("n")){
+                              rate3p = "0";
+                          }
                         edtrrate1.setText(String.valueOf((int) Double.parseDouble(rate1p)));
                         edtrrate2.setText(String.valueOf((int) Double.parseDouble(rate2p)));
                         edtrrate3.setText(String.valueOf((int) Double.parseDouble(rate3p)));
+                     //   totalpayable
                         edtadvdeposit.setText(String.valueOf((int) Double.parseDouble(depositep)));
                         total_amountp = String.valueOf((int) Double.parseDouble(total_amountp));
                         totalrate = (int) Double.parseDouble(total_amountp);
@@ -256,6 +282,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                     pluspattern.setVisibility(View.INVISIBLE);
                     addtxtpattern.setVisibility(View.INVISIBLE);
                     schooltxt.setText(school_Name);
+                     ///   this means ur coming from STD as a Edit
                     if (parcebelCheck.hasExtra("saveorderRequest1") &&
                             intent.getString("isEditA", "n").equals("Added")) {
                         Log.d("YES _>>>", "ADDED");
@@ -278,11 +305,11 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                             }else{
                                 int boysGrildTotal = Constants.cartlist.get(i).getBoys() + Constants.cartlist.get(i).getGirls();
                                 total9to12= total9to12 + boysGrildTotal;
-                                Log.d("totall58", String.valueOf(total9to12));
+                                Log.d("totall912", String.valueOf(total9to12));
                             }
                             Log.d("totall14", String.valueOf(total1to4));
                             Log.d("totall58", String.valueOf(total5to8));
-                            Log.d("totall58", String.valueOf(total9to12));
+
                         }
                         Constants.editcardList = Constants.cartlist;
                         cartlistAdapter = new Addstdadapter(Constants.editcardList, "isEdit");
@@ -294,11 +321,15 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
 
                         edtrrate1.setText(String.valueOf((int) Double.parseDouble(sharedPreferenceUtils.getString("rate1", "0"))));
                         edtrrate2.setText(String.valueOf((int) Double.parseDouble(sharedPreferenceUtils.getString("rate2", "0"))));
+                        edtrrate3.setText(String.valueOf((int) Double.parseDouble(sharedPreferenceUtils.getString("rate3", "0"))));
                         edtadvdeposit.setText(String.valueOf((int) Double.parseDouble(sharedPreferenceUtils.getString("deposite", "0"))));
                         String total_amountp = String.valueOf((int) Double.parseDouble(sharedPreferenceUtils.getString("totalam", "0")));
                         totalrate = (int) Double.parseDouble(total_amountp);
                         placeorder.setText("Update Order");
-                        totalpayable.setText("Total Payable amount : " + total_amountp + " INR");
+                        totalpayable.setText("Total Payable amount : " + total_amountp + " INR");  // bug setting the payable from shared pref
+                        int amount = total1to4 +total5to8+total9to12;
+                        totalpayable.setText("Total Payable amount : " + amount + " INR");
+                        //   setupThePayableAfterReturnSTD();
 
 
                     }
@@ -334,6 +365,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                     Log.d("totall58", String.valueOf(total5to8));
                     Log.d("totall912", String.valueOf(total9to12));
                 }
+                  /// isForm is passed in ADD STD if ure making a new order
                 cartlistAdapter = new Addstdadapter(Constants.cartlist, "isFrom");
                 cartlayout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
                 rcyestd.setLayoutManager(cartlayout);
@@ -353,6 +385,9 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                     if (placeorder.getText().equals("Update Order")) {
                         Log.d("Count2 ->", String.valueOf(count));
                         if (count <= 0) {
+                            for (int i =0;i<Constants.editcardList.size(); i++){
+                                Log.d("CardList After remove",Constants.editcardList.get(i).toString());
+                            }
                             Toast.makeText(mBaseAppCompatActivity, "Please Add one Standard", Toast.LENGTH_SHORT).show();
                             Log.d("Editing Failed", "Adapter List Is Empty");
                         } else {
@@ -361,13 +396,14 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                     } else {
                         placeordercall();
                     }
-                    Log.d("totalrate ->", String.valueOf(totalrate));
+                     Log.d("totalrate ->", String.valueOf(totalrate));
                     Log.d("editDeposite", edtadvdeposit.getText().toString().trim());
                 } else {
                     Toast.makeText(mBaseAppCompatActivity, "Advance deposit should be less than total payable amount.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
 
         rlschoolname.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -395,9 +431,12 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                 if (intent != null) {
                     String name = intent.getString("SchoolName", "Z");
                     Log.d("SchoolnmPasstoAddStd ->", name);
+                    Log.d("Add Std Button ","Clicked");
                     if (intent != null && !name.equals("Z")) {
+                        patternName = sharedPreferenceUtils.getString("patternName","n");
                         intent2.putExtra("order", name);
                         intent2.putExtra("PatternName", patternName);
+                        Log.d("patternPasstoADSTD ->", patternName);
                         intent2.putParcelableArrayListExtra("Addsonstd", Constants.editcardList);
                     }
                 }
@@ -426,6 +465,8 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                 UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchoolid("");
                 UserPreference.getInstance(mBaseAppCompatActivity).setselectedpattern("");
                 UserPreference.getInstance(mBaseAppCompatActivity).setselectedpatternid("");
+                Constants.editcardList.clear();
+                Constants.editcartlist.clear();
                 onBackPressed();
             }
         });
@@ -446,11 +487,13 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 0) {
+                    if (count !=0){
                     rate1 = editable.toString();
                     rate1to4 = Integer.parseInt(rate1);
                     ratee1to4 = rate1to4 * total1to4;
                     totalrate = ratee1to4 + ratee5to8;
                     totalpayable.setText("Total Payable amount : " + totalrate + " INR");
+                         }
                 }
             }
         });
@@ -470,11 +513,13 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 0) {
+                    if (count !=0){
                     rate2 = editable.toString();
                     rate5to8 = Integer.parseInt(rate2.trim());
                     ratee5to8 = rate5to8 * total5to8;
                     totalrate = ratee1to4 + ratee5to8;
                     totalpayable.setText("Total Payable amount : " + totalrate + " INR");
+                }
                 }
             }
         });
@@ -494,11 +539,13 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 0) {
+                    if (count !=0){
                     rate3 = editable.toString();
                     rate9to12 = Integer.parseInt(rate3.trim());
                     ratee9to12 = rate9to12 * total9to12;
                     totalrate = ratee1to4 + ratee5to8 + ratee9to12;
                     totalpayable.setText("Total Payable amount : " + totalrate + " INR");
+                    }
                 }
             }
         });
@@ -585,43 +632,60 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         Log.d("Editor Api called", "Called");
         LinkedHashMap<String, RequestBody> update = new LinkedHashMap<String, RequestBody>();
         String data = sharedPreferenceUtils.getString("orderid", "n");
-        Log.d("DCX", data);
         deposite = edtadvdeposit.getText().toString();
-        String depositevm = edtadvdeposit.getText().toString();
-        String loginidvm = sharedPreferenceUtils.getString("loginid", "n");
-        String totalamvm = sharedPreferenceUtils.getString("totalam", "n");
         String orderidvm = sharedPreferenceUtils.getString("orderid", "n");
-        String rate1vm = sharedPreferenceUtils.getString("rate1", "n");
-        String rate2vm = sharedPreferenceUtils.getString("rate2", "n");
-        String rate3vm = sharedPreferenceUtils.getString("rate3","n");
         String schoolIdvm = sharedPreferenceUtils.getString("schoolid", "n");
         String patterIdvm = sharedPreferenceUtils.getString("patternid", "n");
-
+        String loginidvm = UserPreference.getInstance(this).getLoginId();
+        total_amount = String.valueOf(totalrate);
+        deposite = edtadvdeposit.getText().toString();
+         String rate_1    = edtrrate1.getText().toString();
+         String rate_2  = edtrrate2.getText().toString();
+         String rate_3 =  edtrrate3.getText().toString();
+         edtrrate3.getText().toString();
+         String totalamt = totalpayable.getText().toString();
         update.put("order_id", RequestBody.create(MediaType.parse("multipart/form-data"), orderidvm));
         update.put("login_id", RequestBody.create(MediaType.parse("multipart/form-data"), loginidvm));
         update.put("school_id", RequestBody.create(MediaType.parse("multipart/form-data"), schoolIdvm));
         update.put("pattern_id", RequestBody.create(MediaType.parse("multipart/form-data"), patterIdvm));
-        update.put("rate1", RequestBody.create(MediaType.parse("multipart/form-data"), rate1vm));
-        update.put("rate2", RequestBody.create(MediaType.parse("multipart/form-data"), rate2vm));
-        update.put("rate3",RequestBody.create(MediaType.parse("multipart/form-data"),rate3vm));
-        update.put("total_amount", RequestBody.create(MediaType.parse("multipart/form-data"), totalamvm));
-        update.put("deposite", RequestBody.create(MediaType.parse("multipart/form-data"), depositevm));
-        Log.d("rate ->", rate1);
-        Log.d("PassedRate1->", rate1vm);
-        Log.d("PassedRate2->", rate2vm);
-        Log.d("PassedRate2->", rate3vm);
+        update.put("rate1", RequestBody.create(MediaType.parse("multipart/form-data"), rate_1));
+        update.put("rate2", RequestBody.create(MediaType.parse("multipart/form-data"), rate_2));
+        update.put("rate3",RequestBody.create(MediaType.parse("multipart/form-data"),rate_3));
+        //String str = "a12.334tyz.78x";
+        totalamt = totalamt.replaceAll("[^\\d.]", "");
+        update.put("total_amount", RequestBody.create(MediaType.parse("multipart/form-data"),totalamt));
+        update.put("deposite", RequestBody.create(MediaType.parse("multipart/form-data"), deposite));
+        Log.d("passedorderID# ->",orderidvm);
+        Log.d("passedloginId#->",loginidvm);
+        Log.d("passedschoolid# ->",schoolIdvm);
+        Log.d("passedpattern#->",patterIdvm);
+        Log.d("passedrate1# ->",rate_1);
+        Log.d("passedrate2#->",rate_2);
+        Log.d("passedrate3# ->",rate_3);
+        Log.d("passedtotalamt#->",totalamt);
+        Log.d("passeddepopsite# ->",deposite);
+        Log.d("passedLogionID#->",loginidvm);
 
         APIInterface apiInterface = APIClient.getClient(this).create(APIInterface.class);
-        Call<EditOrderResponse> updateOrder = apiInterface.editOrderForUpdate(update, std, boys, girls);
+        Call<EditOrderResponse> updateOrder = apiInterface.editOrderForUpdate(update, std, boys, girls,stdId);
         updateOrder.enqueue(new Callback<EditOrderResponse>() {
             @Override
             public void onResponse(Call<EditOrderResponse> call, Response<EditOrderResponse> response) {
+                 Log.d("Errror Code",""+response.code());
                 if (response.isSuccessful()) {
                     Log.d("Update SuccessFull", "UpdateOrder");
+                    sharedPreferenceUtils.edit().clear().apply();
+                    editOrderViewModel.clearViewModelData();
+                    Constants.editcardList.clear();
+                    Constants.cartlist.clear();
+                    UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchool(String.valueOf(" "));
+                    UserPreference.getInstance(mBaseAppCompatActivity).setselectedpattern(String.valueOf(" "));
+                    UserPreference.getInstance(mBaseAppCompatActivity).setselectedpatternid(String.valueOf(" "));
+                    UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchoolid(String.valueOf(" "));
                     myEdit.clear();
                     myEdit.commit();
                     myEdit.apply();
-                    startActivity(new Intent(Quickorderforrm.this, Orderllist.class));
+                    startActivity(new Intent(Quickorderforrm.this, MainActivity.class));
                     finish();
                 }
             }
@@ -630,6 +694,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
             public void onFailure(Call<EditOrderResponse> call, Throwable t) {
                 Log.d("Update Failed", "Failed");
                 Log.d("Update Failed", t.getMessage().toString());
+                Log.d("Update Failed",t.getCause().toString());
                 myEdit.clear();
                 myEdit.commit();
                 myEdit.apply();
@@ -639,12 +704,14 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
 
     private void placeordercall() {
         showHideProgressDialog(true);
-        Log.d("Place", "Called");
+        Log.d("Place order", "Called");
         login_id = UserPreference.getInstance(this).getLoginId();
         school_id = selectschoolid;
         pattern_id = selectpatternid;
         total_amount = String.valueOf(totalrate);
         deposite = edtadvdeposit.getText().toString();
+        for (int i =0; i<std.size();i++)
+        Log.d("PLACED -> ","std"+std.get(i));
         LinkedHashMap<String, RequestBody> addPostRequest = new LinkedHashMap<String, RequestBody>();
         addPostRequest.put("login_id", RequestBody.create(MediaType.parse("multipart/form-data"), login_id));
         addPostRequest.put("school_id", RequestBody.create(MediaType.parse("multipart/form-data"), school_id));
@@ -667,10 +734,15 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                             Toast.makeText(Quickorderforrm.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             //patternllist();
                             Constants.cartlist.clear();
+                            Constants.editcardList.clear();
+                            myEdit.clear();
+                            myEdit.commit();
+                            myEdit.apply();
                             UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchool(String.valueOf(" "));
                             UserPreference.getInstance(mBaseAppCompatActivity).setselectedpattern(String.valueOf(" "));
                             UserPreference.getInstance(mBaseAppCompatActivity).setselectedpatternid(String.valueOf(" "));
                             UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchoolid(String.valueOf(" "));
+
                             startActivity(new Intent(Quickorderforrm.this, MainActivity.class));
                             finish();
                         } else {
@@ -678,7 +750,6 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                             Toast.makeText(Quickorderforrm.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Log.d("loggg1", "loggg");
                         showHideProgressDialog(false);
                         Toast.makeText(Quickorderforrm.this, response.message(), Toast.LENGTH_SHORT).show();
                     }
@@ -732,26 +803,87 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         txttotalstdent.setText("TOTAL STUDENTS " + alltotal);
     }
 
+
+     // this function is showing that u had a empty Standard Adapter List   //
     @Override
     public void checkListisEmpty(int value) {
+
         Log.d("Value", String.valueOf(value));
         count = value;
+         if (count == 0) {
+             Toast.makeText(mBaseAppCompatActivity, "At Least On Standard is Required", Toast.LENGTH_SHORT).show();
+             Constants.cartlist.clear();
+             Constants.editcardList.clear();
+           }
     }
 
+    @Override
+    public void updatedWhenDelete(String standard, String total_boys_girls) {
+         //  int  indexOf = std.indexOf(Integer.valueOf(standard));
+
+            try {
+                std.remove(Integer.valueOf(standard));
+            //    stdId.remove(indexOf);
+            }catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException){
+                Toast.makeText(mBaseAppCompatActivity, "Id Is Invalid", Toast.LENGTH_SHORT).show();
+            }
+          int parseInt = Integer.parseInt(standard);
+            String boys_girls_total = total_boys_girls.replaceAll("[^0-9.]", "");
+              String totalPayableAmt = totalpayable.getText().toString();
+          int parseInt2 = Integer.parseInt(boys_girls_total);
+           if (parseInt>0 && parseInt<=4){
+              // rate 1 updated here
+              int rate1 = Integer.parseInt(edtrrate1.getText().toString());
+              int cancel_amt = parseInt2 * rate1;
+               int total_payAMT  =  Integer.parseInt(totalPayableAmt.replaceAll("[^0-9.]", ""));
+              totalpayable.setText("Total Payable amount : "+String.valueOf(total_payAMT - cancel_amt+ " INR"));
+
+          }else if(parseInt>4 && parseInt<=8){
+              // rate 2 updated here
+              int rate2 = Integer.parseInt(edtrrate2.getText().toString());
+              int cancel_amt = parseInt2 * rate2;
+               int total_payAMT  =  Integer.parseInt(totalPayableAmt.replaceAll("[^0-9.]", ""));
+               totalpayable.setText("Total Payable amount : "+String.valueOf(total_payAMT - cancel_amt+ " INR"));
+          }else if (parseInt>8 && parseInt<=12){
+              // rate 3 updated here
+              int rate3 = Integer.parseInt(edtrrate3.getText().toString());
+              int cancel_amt = parseInt2 * rate3;
+               int total_payAMT  =  Integer.parseInt(totalPayableAmt.replaceAll("[^0-9.]", ""));
+               totalpayable.setText("Total Payable amount : "+String.valueOf(total_payAMT - cancel_amt+ " INR"));
+           }
+        Log.d("Updated ->","When Deleted STANDARD");
+        Log.d("Updated ->","When Deleted STANDARD "+parseInt);
+        Log.d("Updated ->","When Deleted STANDARD"+boys_girls_total);
+
+    }
+
+    private void setPayAmtAfterAddStd(){
+        Log.d("TOTAL1to4", String.valueOf(total1to4));
+        Log.d("TOTAL5to8", String.valueOf(total5to8));
+        Log.d("TOTAL9to12", String.valueOf(total9to12));
+
+        if (total1to4 != 0){
+
+        }else if (total5to8 != 0){
+
+        } else if (total9to12 != 0){
+
+        }
+    }
 
     private void schoollist() {
         //  loginid=UserPreference.getInstance(getContext()).getLoginId();
         // String  loginid=UserPreference.getInstance(Quickorderforrm.this).getLoginId();;
         showHideProgressDialog(true);
         APIInterface apiInterface = APIClient.getClient(Quickorderforrm.this).create(APIInterface.class);
-        Call<Schoollistmodel> schoollist = apiInterface.schoollist(login_id, "100", "0", search_value);
-        schoollist.enqueue(new Callback<Schoollistmodel>() {
+        Call<ResponseSchoolList> schoollist = apiInterface.schoollist(login_id, "100", "0", search_value);
+        schoollist.enqueue(new Callback<ResponseSchoolList>() {
             @Override
-            public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
+            public void onResponse(Call<ResponseSchoolList> call, Response<ResponseSchoolList> response) {
                 //    hideSwipeRefreshView();
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        if (response.body().getStatus().toString().equals("true")) {
+                        if (response.body().isStatus()) {
                             showHideProgressDialog(false);
                             if (response.body().getData() != null && response.body().getData().size() != 0) {
                                 //list
@@ -792,7 +924,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                 }
             }
             @Override
-            public void onFailure(Call<Schoollistmodel> call, Throwable t) {
+            public void onFailure(Call<ResponseSchoolList> call, Throwable t) {
                 showHideProgressDialog(false);
             }
         });
@@ -824,7 +956,6 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                                             || parcebelCheck.hasExtra("EditData")) {
                                         if (intent != null && intent.getString("isEdit").equals("order")) {
                                             df = intent.getString("PatternName", "n");
-                                            Log.d("DF ->", df.toString());
                                             patterntxt.setText(df);
                                             Log.d("Pattern->>>>", intent.getString("PatternName"));
                                         }
@@ -862,12 +993,15 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
     }
 
 
-    /*@Override
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         Constants.cartlist.clear();
-        *//*Intent i = new Intent(Quickorderforrm.this, MainActivity.class);
-        startActivity(i);
-        finish();*//*
-    }*/
+        UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchool("");
+        UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchoolid("");
+        UserPreference.getInstance(mBaseAppCompatActivity).setselectedpattern("");
+        UserPreference.getInstance(mBaseAppCompatActivity).setselectedpatternid("");
+        Constants.editcardList.clear();
+        Constants.editcartlist.clear();
+    }
 }
