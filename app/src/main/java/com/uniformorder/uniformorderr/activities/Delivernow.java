@@ -95,7 +95,6 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
         radioGroup = findViewById(R.id.radioGroup);
         radioFulldelivery = findViewById(R.id.radioFulldelivery);
         radiopartial = findViewById(R.id.radiopartial);
-
         Bundle extras = getIntent().getExtras();
         loginid = UserPreference.getInstance(Delivernow.this).getLoginId();
 
@@ -108,6 +107,7 @@ public class Delivernow extends BaseAppCompatActivity implements Deliverorderada
             txtorder.setText("Order No. " + order_id);
             Log.d("orderType",ordertype);
             Log.d("orderid Recived",order_id);
+            ////
         }
 
         profilelistadapter = new Deliverorderadapter(Delivernow.this);

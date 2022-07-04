@@ -97,7 +97,7 @@ public class Paymentpending extends BaseFragment implements OnItemClicked {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recylceorderlist = view.findViewById(R.id.recylceorderlist);
-
+          Log.d("Inside the ->","payment pending");
         UserPreference.getInstance(getContext()).setpayment_pending("payment_pending");
 
         profilelistadapter = new Orderadapter(getContext(),this,"");

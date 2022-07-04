@@ -103,7 +103,7 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
 
         recylceorderlist = view.findViewById(R.id.recylceorderlist);
 
-        profilelistadapter = new Orderadapter(getContext(),this,"");
+        profilelistadapter = new Orderadapter(getContext(),this,"pending");
         linearLayoutManager = new LinearLayoutManager(getContext());
         recylceorderlist.setLayoutManager(linearLayoutManager);
         recylceorderlist.setAdapter(profilelistadapter);

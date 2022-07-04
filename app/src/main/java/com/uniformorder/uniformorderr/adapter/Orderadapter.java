@@ -61,15 +61,18 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull Orderadapter.ViewHolder holder,int position) {
         final DataItem listdetails = profilelist.get(position);
+        if (completeStatus.equals("pending")){
+            UserPreference.getInstance(context).setpayment_pending("pending");
+            Log.d("Orderadapter SET TO _>","pending");
+        }
         String ordder= UserPreference.getInstance(context).getpayment_pending();
+
         Log.d("Orderadapter",ordder);
         if (ordder.equals("payment_pending")){
-
             holder.paynow.setVisibility(View.VISIBLE);
             holder.paynow.setText("Pay Now");
             holder.delete.setVisibility(View.GONE);
             holder.edit.setVisibility(View.GONE);
-
 
         }else if (ordder.equals("pending")){
             holder.paynow.setVisibility(View.VISIBLE);
@@ -111,12 +114,12 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
 ///////////////////////////       FOR LOGS     ////////////////////////////////////
 //                Log.d("SchoolName",profilelist.get(position).getSchool().getName());
 //                Log.d("TotalAmount",profilelist.get(position).getTotalAmount());
-                Log.d("IDSchool#",String.valueOf(profilelist.get(position).getSchool().getId()));
+             //   Log.d("IDSchool#",String.valueOf(profilelist.get(position).getSchool().getId()));
 //                Log.d("LoginId",profilelist.get(position).getLoginId());
 //                Log.d("IDpattern",profilelist.get(position).getPatternId());
 //                Log.d("PatternName",profilelist.get(position).getPattern().getName());
                 List<StandardsItem> list = profilelist.get(position).getStandards();
-               Log.d("OrderId# ->",String.valueOf(profilelist.get(position).getId()));
+               //Log.d("OrderId# ->",String.valueOf(profilelist.get(position).getId()));
 //                Log.d("SchoolName ->",profilelist.get(position).getSchool().getName());
 //                Log.d("StandaredID ->",profilelist.get(position).getStandards().get(position).getStandardId());
 //                Toast.makeText(context, "Edit", Toast.LENGTH_SHORT).show();
@@ -130,29 +133,29 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
                      saveorderRequestdetails.setGirls(Integer.parseInt(list.get(i).getGirls()));
                      saveorderReqlist.add(i,saveorderRequestdetails);
 
-                    Log.d("XXStandardID",list.get(i).getStandardId());
-                    Log.d("XXStandard",list.get(i).getStandard());
-                    Log.d("XX Boys",list.get(i).getBoys());
-                    Log.d("XX Girls",list.get(i).getGirls());
+//                    Log.d("XXStandardID",list.get(i).getStandardId());
+//                    Log.d("XXStandard",list.get(i).getStandard());
+//                    Log.d("XX Boys",list.get(i).getBoys());
+//                    Log.d("XX Girls",list.get(i).getGirls());
 
                  }
                 for (int i=0; i< profilelist.size();i++){
 
                 }
                  for (int i =0; i<saveorderReqlist.size();i++){
-                     Log.d("XD ->",saveorderReqlist.get(i).getStandard().toString());
+//                     Log.d("XD ->",saveorderReqlist.get(i).getStandard().toString());
                  }
 
                 if (Constants.editcardList != null) {
                     for (int i =0; i<saveorderReqlist.size();i++) {
                        Constants.editcardList.add(saveorderReqlist.get(i));
-                        Log.d("ThisXXO ->", "XO");
+//                        Log.d("ThisXXO ->", "XO");
                     }
                 }
                 for (int i =0; i<Constants.editcardList.size(); i++){
 
-                   Log.d("PASSED_STANDARD->",Constants.editcardList.get(i).getStandard().toString());
-                    Log.d("PASSED_STANDARD ID->",Constants.editcardList.get(i).getStandardId().toString());
+//                   Log.d("PASSED_STANDARD->",Constants.editcardList.get(i).getStandard().toString());
+//                    Log.d("PASSED_STANDARD ID->",Constants.editcardList.get(i).getStandardId().toString());
                 }
 
                 // passing the EditData list  //
@@ -177,7 +180,7 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
                           profilelist.remove(position);
                           notifyItemChanged(holder.getAdapterPosition());
                           notifyItemRangeChanged(holder.getAdapterPosition(),profilelist.size());
-                          Log.d("ID_ADP ->",String.valueOf(listdetails.getId()));
+//                          Log.d("ID_ADP ->",String.valueOf(listdetails.getId()));
                           // Toast.makeText(context, String.valueOf(position), Toast.LENGTH_SHORT).show();
                           onItemClicked.onClick(String.valueOf(listdetails.getId()));
                          Toast.makeText(context, "Item Deleted", Toast.LENGTH_SHORT).show();
@@ -225,7 +228,7 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
                 }
             }
         });
-        Log.d("TAG",listdetails.getOrderDate());
+//        Log.d("TAG",listdetails.getOrderDate());
         holder.orderid.setText(String.valueOf(listdetails.getId())); // this is need to check //
         holder.date.setText("Created at: "+ listdetails.getOrderDate());
         holder.schoolname.setText("School Name: "+listdetails.getSchool().getName());
@@ -234,7 +237,7 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
         Double d = Double.valueOf(listdetails.getTotalAmount());
         int i = d.intValue();
         String amount = String.valueOf(i);
-        Log.d("INTEGER",String.valueOf(i));
+//        Log.d("INTEGER",String.valueOf(i));
         holder.total.setText("Total: "+amount);
         holder.pendingamout.setText("Pending: "+listdetails.getPendingAmount());
     }
