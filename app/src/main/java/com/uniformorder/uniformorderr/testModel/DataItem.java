@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class DataItem implements Serializable {
 
+	@SerializedName("form_number")
+	private String formNumber;
+
 	@SerializedName("login_id")
 	private String loginId;
 
@@ -71,6 +74,10 @@ public class DataItem implements Serializable {
 
 	@SerializedName("status")
 	private String status;
+
+	public String getFormNumber(){
+		return formNumber;
+	}
 
 	public String getLoginId(){
 		return loginId;

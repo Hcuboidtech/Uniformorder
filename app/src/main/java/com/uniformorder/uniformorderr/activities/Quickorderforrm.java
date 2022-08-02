@@ -56,11 +56,11 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
     SharedPreferences.Editor myEdit;
     Intent parcebelCheck;
     Bundle intent;
-    String principal_Name, school_Name, order_id, school_Id, patternName;
+    String principal_Name, school_Name, order_id, school_Id, patternName,formNumber;
     TextView edtschoolname, edtpatternname;
     TextView addtxtpattern, addstd1, addtxtschool;
     TextView schooltxt, patterntxt;
-    EditText edtadvdeposit, edtrrate1, edtrrate2,edtrrate3;
+    EditText edtadvdeposit, edtrrate1, edtrrate2,edtrrate3,edFormNumber;
     RelativeLayout rlschoolname, rlpatternname;
     Button placeorder;
     String spinner;
@@ -137,6 +137,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         plusschool = findViewById(R.id.plusschool);
         pluspattern = findViewById(R.id.pluspattern);
         plusstudent = findViewById(R.id.plusstudent);
+        edFormNumber = findViewById(R.id.edtformNumber);
 
         mListData = new ArrayList<com.uniformorder.uniformorderr.model.DataItem>();
         patterndata = new ArrayList<>();
@@ -161,6 +162,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                 myEdit.putString("mode","edit");
       //////// this means ur editing the order /// cuz u had a school name which u didn't get in
         // quick order
+                edFormNumber.setEnabled(false);
                 addtxtschool.setVisibility(View.INVISIBLE);
                 plusschool.setVisibility(View.INVISIBLE);
                 pluspattern.setVisibility(View.INVISIBLE);
@@ -177,7 +179,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                    //     Log.d("FETCEDH BYS", list.get(0).getBoys().toString());
                         String order_idp, schhool_idp, login_idp, pattern_idp,
                                 rate1p, rate2p,rate3p,total_amountp, depositep,
-                                patternnamep,pendingAMT;
+                                patternnamep,pendingAMT,formNum;
 
                         patternnamep = intent.getString("PatternName", "n");
                         Log.d("PatternRecived->", patternnamep);
@@ -193,6 +195,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                         pendingAMT = intent.getString("pendingamt","n");
                         total_amountp = intent.getString("totalam", "n");
                         depositep = intent.getString("deposite", "n");
+                        formNum = intent.getString("formNum","n");
 
                        // editOrderViewModel.saveData(order_idp, schhool_idp, login_idp, pattern_idp, rate1p, rate2p,rate3p, total_amountp, depositep);
                         myEdit.putString("orderid", order_idp);
@@ -205,6 +208,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                         myEdit.putString("totalam", total_amountp);
                         myEdit.putString("deposite", depositep);
                         myEdit.putString("pendingamt",pendingAMT);
+                        myEdit.putString("formNumber",formNum);
                         myEdit.commit();
                         Log.d("PatternSAVED",sharedPreferenceUtils.getString("patternName","n"));
 
@@ -217,6 +221,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                           if (rate3p.equals("n")){
                               rate3p = "0";
                           }
+                          edFormNumber.setText(formNum);
                         edtrrate1.setText(String.valueOf((int) Double.parseDouble(rate1p)));
                         edtrrate2.setText(String.valueOf((int) Double.parseDouble(rate2p)));
                         edtrrate3.setText(String.valueOf((int) Double.parseDouble(rate3p)));
@@ -274,6 +279,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                         cartlistAdapter.notifyDataSetChanged();
                     }
                     /// after retuning from Adstd As -> Edit Order //
+                    edFormNumber.setEnabled(false);
                     principal_Name = intent.getString("principalName");
                     school_Name = intent.getString("SchoolName");
                     school_id = intent.getString("SchoolId");
@@ -286,7 +292,9 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                     if (parcebelCheck.hasExtra("saveorderRequest1") &&
                             intent.getString("isEditA", "n").equals("Added")) {
                         Log.d("YES _>>>", "ADDED");
-
+                           String s =sharedPreferenceUtils.getString("formNumber","n");
+                        edFormNumber.setEnabled(false);
+                        edFormNumber.setText(s);
                         placeorder.setText("Update Order");
                         Constants.cartlist = getIntent().getParcelableArrayListExtra("saveorderRequest1");
 
@@ -631,12 +639,13 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
     private void editorderApi() {
         Log.d("Editor Api called", "Called");
         LinkedHashMap<String, RequestBody> update = new LinkedHashMap<String, RequestBody>();
-        String data = sharedPreferenceUtils.getString("orderid", "n");
+
         deposite = edtadvdeposit.getText().toString();
         String orderidvm = sharedPreferenceUtils.getString("orderid", "n");
         String schoolIdvm = sharedPreferenceUtils.getString("schoolid", "n");
         String patterIdvm = sharedPreferenceUtils.getString("patternid", "n");
         String loginidvm = UserPreference.getInstance(this).getLoginId();
+        formNumber = edFormNumber.getText().toString();
         total_amount = String.valueOf(totalrate);
         deposite = edtadvdeposit.getText().toString();
          String rate_1    = edtrrate1.getText().toString();
@@ -655,6 +664,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         totalamt = totalamt.replaceAll("[^\\d.]", "");
         update.put("total_amount", RequestBody.create(MediaType.parse("multipart/form-data"),totalamt));
         update.put("deposite", RequestBody.create(MediaType.parse("multipart/form-data"), deposite));
+        update.put("form_number",RequestBody.create(MediaType.parse("multipart/form-data"),formNumber));
         Log.d("passedorderID# ->",orderidvm);
         Log.d("passedloginId#->",loginidvm);
         Log.d("passedschoolid# ->",schoolIdvm);
@@ -710,6 +720,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         pattern_id = selectpatternid;
         total_amount = String.valueOf(totalrate);
         deposite = edtadvdeposit.getText().toString();
+        formNumber = edFormNumber.getText().toString();
         for (int i =0; i<std.size();i++)
         Log.d("PLACED -> ","std"+std.get(i));
         LinkedHashMap<String, RequestBody> addPostRequest = new LinkedHashMap<String, RequestBody>();
@@ -721,6 +732,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         addPostRequest.put("rate3",RequestBody.create(MediaType.parse("multipart/form-data"), rate3));
         addPostRequest.put("total_amount", RequestBody.create(MediaType.parse("multipart/form-data"), total_amount));
         addPostRequest.put("deposite", RequestBody.create(MediaType.parse("multipart/form-data"), deposite));
+        addPostRequest.put("form_number",RequestBody.create(MediaType.parse("multipart/form-data"),formNumber));
         APIInterface apiInterface = APIClient.getClient(this).create(APIInterface.class);
         Call<Schoollistmodel> addorder = apiInterface.addorder(addPostRequest, std, boys, girls);
         addorder.enqueue(new Callback<Schoollistmodel>() {

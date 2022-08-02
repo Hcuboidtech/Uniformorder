@@ -2,6 +2,7 @@ package com.uniformorder.uniformorderr.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,7 +50,7 @@ public class Addschool extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_addschool);
+       // setContentView(R.layout.activity_addschool);
         addschool = findViewById(R.id.addschool);
         img_back = findViewById(R.id.img_back);
         edtschoolname = findViewById(R.id.edtschoolname);
@@ -107,7 +108,7 @@ public class Addschool extends BaseAppCompatActivity {
         } else if (principalname.isEmpty() || principalname.trim().length() == 0) {
             edtprincipalname.setError("Enter Principal Name");
         } else if (assistantname.isEmpty() || assistantname.trim().length() == 0) {
-            edtassiname.setError("Enter Assistant Name");
+          //  edtassiname.setError("Enter Assistant Name");
         } else if (city.isEmpty() || city.trim().length() == 0) {
             edtcityname.setError("Enter Palce");
         } else if (paycentre.isEmpty() || paycentre.trim().length() == 0) {
@@ -117,9 +118,15 @@ public class Addschool extends BaseAppCompatActivity {
         } else if (mobile1.isEmpty() || mobile1.trim().length() == 0) {
             edtmobile1.setError("Enter Mobile Number 1");
         } else if (mobile2.isEmpty() || mobile2.trim().length() == 0) {
-            edtmobile2.setError("Enter Mobile Number 2");
+          //  edtmobile2.setError("Enter Mobile Number 2");
         } else {
             showHideProgressDialog(true);
+            if(TextUtils.isEmpty(edtassiname.getText().toString())){
+                edtassiname.setText("");
+            }
+            if(TextUtils.isEmpty(edtassiname.getText().toString())){
+                edtassiname.setText("");
+            }
             APIInterface apiInterface = APIClient.getClient(this).create(APIInterface.class);
             Call<Registermodel> updateschool = apiInterface.updateschool(loginid, Schoollid, schoolname, principalname, assistantname, city, paycentre, strdistict, mobile1, mobile2);
             updateschool.enqueue(new Callback<Registermodel>() {
@@ -227,9 +234,7 @@ public class Addschool extends BaseAppCompatActivity {
             edtschoolname.setError("Enter School Name");
         } else if (principalname.isEmpty() || principalname.trim().length() == 0) {
             edtprincipalname.setError("Enter Principal Name");
-        } else if (assistantname.isEmpty() || assistantname.trim().length() == 0) {
-            edtassiname.setError("Enter Assistant Name");
-        } else if (city.isEmpty() || city.trim().length() == 0) {
+        }  else if (city.isEmpty() || city.trim().length() == 0) {
             edtcityname.setError("Enter Palce");
         } else if (paycentre.isEmpty() || paycentre.trim().length() == 0) {
             edtpayname.setError("Enter Pay Center");
@@ -237,8 +242,6 @@ public class Addschool extends BaseAppCompatActivity {
             edtdistrictname.setError("Enter District");
         } else if (mobile1.isEmpty() || mobile1.trim().length() == 0) {
             edtmobile1.setError("Enter Mobile Number 1");
-        } else if (mobile2.isEmpty() || mobile2.trim().length() == 0) {
-            edtmobile2.setError("Enter Mobile Number 2");
         } else {
             showHideProgressDialog(true);
             APIInterface apiInterface = APIClient.getClient(this).create(APIInterface.class);

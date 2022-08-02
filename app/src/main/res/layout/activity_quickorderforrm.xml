@@ -61,6 +61,34 @@
                 android:orientation="vertical"
                 android:padding="@dimen/_10sdp">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="ADD FORM NUMBER"
+                        android:textColor="@color/darkblue"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="bold" />
+
+
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/edtformNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/editborder"
+                    android:inputType="number"
+                    android:padding="@dimen/_9sdp"
+                    android:textColor="@color/darkblue"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"

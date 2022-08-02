@@ -49,11 +49,19 @@ public class Schoollistadapter  extends RecyclerView.Adapter<Schoollistadapter.V
 
         holder.schoolname.setText(listdetails.getName());
         holder.principalname.setText(listdetails.getPrincipalName());
-        holder.assisname.setText(listdetails.getAssistantName());
+        if (listdetails.getAssistantName() == null){
+            holder.assisname.setVisibility(View.GONE);
+        }else{
+        holder.assisname.setText(listdetails.getAssistantName());}
+        if (listdetails.getMobile2() == null){
+            holder.mobile2.setVisibility(View.GONE);
+        }else{
+            holder.mobile2.setText(listdetails.getMobile2());
+        }
         holder.cityname.setText(listdetails.getCombo().getDistrictName());
         holder.paycentrename.setText(listdetails.getCombo().getPayCenterName());
         holder.mobile1.setText(listdetails.getMobile1());
-        holder.mobile2.setText(listdetails.getMobile2());
+
 
 
 
