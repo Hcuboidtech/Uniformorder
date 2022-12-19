@@ -112,7 +112,10 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
                 intent.putExtra("deposite",profilelist.get(position).getDeposite());
                 intent.putExtra("pendingamt",profilelist.get(position).getPendingAmount());
                 intent.putExtra("formNum",profilelist.get(position).getFormNumber());
-                Log.d("Form Num 77",profilelist.get(position).getFormNumber());
+                intent.putExtra("addondate",profilelist.get(position).getAddOnDate());
+                intent.putExtra("orderby",profilelist.get(position).getOrderBy());
+             //   Log.d("Form Num 77",profilelist.get(position).getFormNumber());
+                System.out.println("SCHOOL ID PASSED "+profilelist.get(position).getSchool().getId());
 ///////////////////////////       FOR LOGS     ////////////////////////////////////
 //                Log.d("SchoolName",profilelist.get(position).getSchool().getName());
 //                Log.d("TotalAmount",profilelist.get(position).getTotalAmount());
@@ -235,11 +238,12 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
         holder.date.setText("Created at: "+ listdetails.getOrderDate());
         holder.schoolname.setText("School Name: "+listdetails.getSchool().getName());
         holder.principalname.setText("Principal Name: "+listdetails.getSchool().getPrincipalName());
-
-        Double d = Double.valueOf(listdetails.getTotalAmount());
+        holder.orderBy.setText("Order By: "+ listdetails.getOrderBy());
+        holder.pattern_name.setText("Pattern Name: "+listdetails.getPattern().getName());
+        Double d = Double.valueOf(listdetails.getTotalStudents());
         int i = d.intValue();
         String amount = String.valueOf(i);
-//        Log.d("INTEGER",String.valueOf(i));
+        Log.d("INTEGER",String.valueOf(i));
         holder.total.setText("Total: "+amount);
         holder.pendingamout.setText("Pending: "+listdetails.getPendingAmount());
     }
@@ -260,7 +264,7 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView orderid,date,schoolname,principalname,total,pendingamout;
+        TextView orderid,date,schoolname,principalname,total,pendingamout,orderBy,pattern_name;
         TextView paynow,delete,edit;
         LinearLayout linearLayout;
         public ViewHolder(@NonNull View itemView) {
@@ -275,6 +279,8 @@ public class Orderadapter extends RecyclerView.Adapter<Orderadapter.ViewHolder> 
             edit = itemView.findViewById(R.id.edit_btn);
             delete = itemView.findViewById(R.id.delete_btn);
             linearLayout = itemView.findViewById(R.id.action_box);
+            orderBy = itemView.findViewById(R.id.orderBy);
+            pattern_name = itemView.findViewById(R.id.pattern_Name);
         }
 
         @Override

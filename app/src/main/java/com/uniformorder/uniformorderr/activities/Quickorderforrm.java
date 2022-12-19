@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,7 +13,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,7 +26,6 @@ import android.widget.Toast;
 import com.uniformorder.uniformorderr.R;
 import com.uniformorder.uniformorderr.adapter.Addstdadapter;
 import com.uniformorder.uniformorderr.adapter.CommonListBottomSheet;
-import com.uniformorder.uniformorderr.adapter.Countryadapter;
 import com.uniformorder.uniformorderr.adapter.patternadapter;
 import com.uniformorder.uniformorderr.model.DataItem;
 import com.uniformorder.uniformorderr.model.EditOrderResponse;
@@ -39,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -50,31 +54,35 @@ import retrofit2.Response;
 
 public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadapter.OnItemSelecteListener {
 
+    AutoCompleteTextView autoCompleteTextView;
     public EditOrderListViewModel editOrderViewModel;
+    Calendar c = Calendar.getInstance();
+    private int mYear, mMonth, mDay, mHour, mMinute;
     int count = 2;  /// custom value
     SharedPreferences sharedPreferenceUtils;
     SharedPreferences.Editor myEdit;
     Intent parcebelCheck;
     Bundle intent;
-    String principal_Name, school_Name, order_id, school_Id, patternName,formNumber;
-    TextView edtschoolname, edtpatternname;
+    String principal_Name, school_Name, order_id, school_Id, patternName,formNumber,orderBy;
+    TextView edtschoolname, edtpatternname,textViewDate;
     TextView addtxtpattern, addstd1, addtxtschool;
     TextView schooltxt, patterntxt;
-    EditText edtadvdeposit, edtrrate1, edtrrate2,edtrrate3,edFormNumber;
+    EditText edtadvdeposit, edtrrate1, edtrrate2,edtrrate3,edFormNumber,edorderBy;
     RelativeLayout rlschoolname, rlpatternname;
     Button placeorder;
     String spinner;
     RecyclerView rcyestd;
+    String passedDate="";
     String login_id = "0", school_id = "0", pattern_id = "0", rate1 = "1", rate2 = "1", rate3="1", deposite = "0", total_amount = "0";
     String selectschoolid = "0", selectpatternid = "0", search_value = " ";
     ImageView img_back, plusschool, pluspattern, plusstudent;
-    NDSpinner patternspinner, schoollspinner;
+    NDSpinner patternspinner;// schoollspinner;
     String selectedsschoolname = "", selectedpatternname = "";
 
-    List<DataItem> mListData;
+    List<DataItem> mListData = new ArrayList<com.uniformorder.uniformorderr.model.DataItem>();
     List<Schoollistdetails> patterndata;
 
-
+    List<DataItem>schoolItems;
     ArrayList<SaveorderRequestdetails> saveorderRequest;
     List<Integer> std;
     List<Integer> boys;
@@ -114,12 +122,15 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         parcebelCheck = getIntent();
         //  setContentView(R.layout.activity_quickorderforrm);
         editOrderViewModel = new ViewModelProvider(this).get(EditOrderListViewModel.class);
+        textViewDate= findViewById(R.id.tvDate);
+        edorderBy = findViewById(R.id.edOrderBy);
+        autoCompleteTextView = findViewById(R.id.autocompleteTextView);
         edtschoolname = findViewById(R.id.edtschoolname);
         edtpatternname = findViewById(R.id.edtpatternname);
         addtxtschool = findViewById(R.id.addtxtschool);
         addtxtpattern = findViewById(R.id.addtxtpattern);
         addstd1 = findViewById(R.id.addstd1);
-        rlschoolname = findViewById(R.id.rlschoolname);
+//        rlschoolname = findViewById(R.id.rlschoolname);
         rlpatternname = findViewById(R.id.rlpatternname);
         placeorder = findViewById(R.id.placeorder);
         rcyestd = findViewById(R.id.rcyestd);
@@ -130,19 +141,19 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         edtrrate1 = findViewById(R.id.edtrrate1);
         edtrrate2 = findViewById(R.id.edtrrate2);
         edtrrate3 = findViewById(R.id.edtrrate3);
-        schoollspinner = (NDSpinner)findViewById(R.id.schoollspinner);
+//        schoollspinner = (NDSpinner)findViewById(R.id.schoollspinner);
         patternspinner = (NDSpinner) findViewById(R.id.patternspinner);
-        schooltxt = findViewById(R.id.schooltxt);
+//        schooltxt = findViewById(R.id.schooltxt);
         patterntxt = findViewById(R.id.patterntxt);
         plusschool = findViewById(R.id.plusschool);
         pluspattern = findViewById(R.id.pluspattern);
         plusstudent = findViewById(R.id.plusstudent);
         edFormNumber = findViewById(R.id.edtformNumber);
 
-        mListData = new ArrayList<com.uniformorder.uniformorderr.model.DataItem>();
         patterndata = new ArrayList<>();
         saveorderRequest = new ArrayList<SaveorderRequestdetails>();
 
+        schoolItems = new ArrayList<>();
         rate2 = edtrrate1.getText().toString();
 
         intent = getIntent().getExtras();
@@ -154,15 +165,43 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
 
         schoollist();
         patternlist();
-
+        // used to get select the date
+        handleSelectDate();
 
         if (intent != null) {
+
+            if(!sharedPreferenceUtils.getString("form","").equals("")){
+                edFormNumber.setText(sharedPreferenceUtils.getString("form",""));
+            }
+
+            if (!sharedPreferenceUtils.getString("displayDate","n").equals("n")){
+            textViewDate.setText(sharedPreferenceUtils.getString("displayDate","n"));
+            System.out.println("TEST THE DATE  - >"+sharedPreferenceUtils.getString("displayDate","n"));
+
+               if (!UserPreference.getInstance(mBaseAppCompatActivity).getselectedSchool().equals("")){
+                   autoCompleteTextView.setText(UserPreference.getInstance(mBaseAppCompatActivity).getselectedSchool());
+                selectschoolid=UserPreference.getInstance(mBaseAppCompatActivity).getselectedSchoolid();
+                }
+               if(!UserPreference.getInstance(mBaseAppCompatActivity).getselectedpattern().equals("")){
+                   selectedpatternname = UserPreference.getInstance(mBaseAppCompatActivity).getselectedpattern();
+                   selectpatternid = UserPreference.getInstance(mBaseAppCompatActivity).getselectedpatternid();
+
+                   patterntxt.setText(selectedpatternname);
+               }
+
+            }
+
+            // this is used for the date setup FROM SHARED PREF
             String sklanem = intent.getString("SchoolName", "Q");
             if (!sklanem.equals("Q")) {
                 myEdit.putString("mode","edit");
       //////// this means ur editing the order /// cuz u had a school name which u didn't get in
         // quick order
-                edFormNumber.setEnabled(false);
+                edorderBy.setEnabled(false);
+                textViewDate.setEnabled(false);
+//                edFormNumber.setEnabled(false);
+                autoCompleteTextView.setEnabled(false);
+
                 addtxtschool.setVisibility(View.INVISIBLE);
                 plusschool.setVisibility(View.INVISIBLE);
                 pluspattern.setVisibility(View.INVISIBLE);
@@ -179,7 +218,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                    //     Log.d("FETCEDH BYS", list.get(0).getBoys().toString());
                         String order_idp, schhool_idp, login_idp, pattern_idp,
                                 rate1p, rate2p,rate3p,total_amountp, depositep,
-                                patternnamep,pendingAMT,formNum;
+                                patternnamep,pendingAMT,formNum,addDate,orderby1;
 
                         patternnamep = intent.getString("PatternName", "n");
                         Log.d("PatternRecived->", patternnamep);
@@ -196,7 +235,8 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                         total_amountp = intent.getString("totalam", "n");
                         depositep = intent.getString("deposite", "n");
                         formNum = intent.getString("formNum","n");
-
+                        addDate = intent.getString("addondate","n");
+                        orderby1 = intent.getString("orderby","n");
                        // editOrderViewModel.saveData(order_idp, schhool_idp, login_idp, pattern_idp, rate1p, rate2p,rate3p, total_amountp, depositep);
                         myEdit.putString("orderid", order_idp);
                         myEdit.putString("schoolid", schhool_idp);
@@ -209,6 +249,8 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                         myEdit.putString("deposite", depositep);
                         myEdit.putString("pendingamt",pendingAMT);
                         myEdit.putString("formNumber",formNum);
+                        myEdit.putString("addondate",addDate);
+                        myEdit.putString("orderby",orderby1);
                         myEdit.commit();
                         Log.d("PatternSAVED",sharedPreferenceUtils.getString("patternName","n"));
 
@@ -222,6 +264,8 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                               rate3p = "0";
                           }
                           edFormNumber.setText(formNum);
+                          textViewDate.setText(addDate);
+                          edorderBy.setText(orderby1);
                         edtrrate1.setText(String.valueOf((int) Double.parseDouble(rate1p)));
                         edtrrate2.setText(String.valueOf((int) Double.parseDouble(rate2p)));
                         edtrrate3.setText(String.valueOf((int) Double.parseDouble(rate3p)));
@@ -279,7 +323,7 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                         cartlistAdapter.notifyDataSetChanged();
                     }
                     /// after retuning from Adstd As -> Edit Order //
-                    edFormNumber.setEnabled(false);
+//                    edFormNumber.setEnabled(false);
                     principal_Name = intent.getString("principalName");
                     school_Name = intent.getString("SchoolName");
                     school_id = intent.getString("SchoolId");
@@ -287,14 +331,17 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                     plusschool.setVisibility(View.INVISIBLE);
                     pluspattern.setVisibility(View.INVISIBLE);
                     addtxtpattern.setVisibility(View.INVISIBLE);
-                    schooltxt.setText(school_Name);
+                     autoCompleteTextView.setText(school_Name);
+                    //schooltxt.setText(school_Name);
                      ///   this means ur coming from STD as a Edit
                     if (parcebelCheck.hasExtra("saveorderRequest1") &&
                             intent.getString("isEditA", "n").equals("Added")) {
                         Log.d("YES _>>>", "ADDED");
                            String s =sharedPreferenceUtils.getString("formNumber","n");
-                        edFormNumber.setEnabled(false);
+//                        edFormNumber.setEnabled(false);
                         edFormNumber.setText(s);
+                        edorderBy.setText(sharedPreferenceUtils.getString("orderby","n"));
+                        textViewDate.setText(sharedPreferenceUtils.getString("addondate","n"));
                         placeorder.setText("Update Order");
                         Constants.cartlist = getIntent().getParcelableArrayListExtra("saveorderRequest1");
 
@@ -413,15 +460,15 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         });
 
 
-        rlschoolname.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                spinner = "schoolspinner";
-                //    setbottomview(spinner);
-                isChecked = true;
-                schoollspinner.performClick();
-            }
-        });
+//        rlschoolname.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                spinner = "schoolspinner";
+//                //    setbottomview(spinner);
+//                isChecked = true;
+//             //   schoollspinner.performClick();
+//            }
+//        });
         rlpatternname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -448,6 +495,9 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                         intent2.putParcelableArrayListExtra("Addsonstd", Constants.editcardList);
                     }
                 }
+                    String formnum =  edFormNumber.getText().toString();
+                      myEdit.putString("form",formnum);
+                    myEdit.commit();
                 startActivity(intent2);
                 finish();
 
@@ -558,29 +608,58 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
             }
         });
 
-        schoollspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String coutryid = String.valueOf(mListData.get(i).getId());
-                String selecteddname = mListData.get(i).getName();
-                if (isChecked) {
-                    schooltxt.setText(selecteddname);
-                    selectschoolid = coutryid;
-                    Log.d("selecteddname", selecteddname);
-                    UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchool(String.valueOf(selecteddname));
-                    UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchoolid(String.valueOf(coutryid));
-                } else {
-                    selectedsschoolname = UserPreference.getInstance(mBaseAppCompatActivity).getselectedSchool();
-                    selectschoolid = UserPreference.getInstance(mBaseAppCompatActivity).getselectedSchoolid();
-                    schooltxt.setText(selectedsschoolname);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                int index =0;
+                UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchoolid("");
+                String item = (String) adapterView.getItemAtPosition(i);
+
+                System.out.println("SELECTED CLICKED"+ adapterView.getItemAtPosition(i));
+                System.out.println("SELECTED -> ITEM"+item);
+                for (int x =0; x<mListData.size();x++){
+                    System.out.println("ITEMS are ->"+mListData.get(x).getName());
+                   if (mListData.get(x).getName().equals(item)){
+                       index =x;
+                   }
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+                 int li = mListData.indexOf(item);
+                System.out.println("Selected"+li);
+                String coutryid = String.valueOf(mListData.get(index).getId());
+                System.out.println("SELECTED - country id"+coutryid);
+                String selecteddname = mListData.get(index).getName();
+                System.out.println("SELECTED -- selected name"+selecteddname);
+                selectschoolid = coutryid;
+                System.out.println("SELECTED SCHOOL ID"+selectschoolid);
+                UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchool(String.valueOf(selecteddname));
+                UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchoolid(String.valueOf(coutryid));
             }
         });
+
+//        schoollspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                String coutryid = String.valueOf(mListData.get(i).getId());
+//                String selecteddname = mListData.get(i).getName();
+//                if (isChecked) {
+//                    schooltxt.setText(selecteddname);
+//                    selectschoolid = coutryid;
+//                    Log.d("selecteddname", selecteddname);
+//                    UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchool(String.valueOf(selecteddname));
+//                    UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchoolid(String.valueOf(coutryid));
+//                } else {
+//                    selectedsschoolname = UserPreference.getInstance(mBaseAppCompatActivity).getselectedSchool();
+//                    selectschoolid = UserPreference.getInstance(mBaseAppCompatActivity).getselectedSchoolid();
+//                    schooltxt.setText(selectedsschoolname);
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
         patternspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -594,9 +673,15 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                     UserPreference.getInstance(mBaseAppCompatActivity).setselectedpattern(String.valueOf(selecteddname));
                     UserPreference.getInstance(mBaseAppCompatActivity).setselectedpatternid(String.valueOf(coutryid));
                 } else {
+                    System.out.println("Pattern 00 -?");
                     selectedpatternname = UserPreference.getInstance(mBaseAppCompatActivity).getselectedpattern();
                     selectpatternid = UserPreference.getInstance(mBaseAppCompatActivity).getselectedpatternid();
                     patterntxt.setText(selectedpatternname);
+                    if (selectedpatternname.equals("")){
+                    if (!sharedPreferenceUtils.getString("patternName","n").equals("n")){
+                        patterntxt.setText(sharedPreferenceUtils.getString("patternName","n"));
+                    }
+                    }
                 }
             }
 
@@ -653,6 +738,10 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
          String rate_3 =  edtrrate3.getText().toString();
          edtrrate3.getText().toString();
          String totalamt = totalpayable.getText().toString();
+
+        passedDate = sharedPreferenceUtils.getString("addondate","n");
+        orderBy = edorderBy.getText().toString();
+
         update.put("order_id", RequestBody.create(MediaType.parse("multipart/form-data"), orderidvm));
         update.put("login_id", RequestBody.create(MediaType.parse("multipart/form-data"), loginidvm));
         update.put("school_id", RequestBody.create(MediaType.parse("multipart/form-data"), schoolIdvm));
@@ -660,11 +749,14 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         update.put("rate1", RequestBody.create(MediaType.parse("multipart/form-data"), rate_1));
         update.put("rate2", RequestBody.create(MediaType.parse("multipart/form-data"), rate_2));
         update.put("rate3",RequestBody.create(MediaType.parse("multipart/form-data"),rate_3));
-        //String str = "a12.334tyz.78x";
         totalamt = totalamt.replaceAll("[^\\d.]", "");
         update.put("total_amount", RequestBody.create(MediaType.parse("multipart/form-data"),totalamt));
         update.put("deposite", RequestBody.create(MediaType.parse("multipart/form-data"), deposite));
         update.put("form_number",RequestBody.create(MediaType.parse("multipart/form-data"),formNumber));
+        update.put("add_date_on",RequestBody.create(MediaType.parse("multipart/form-data"),passedDate));
+        update.put("order_by",RequestBody.create(MediaType.parse("multipart/form-data"),orderBy));
+        Log.d("passedate# ->",passedDate);
+        Log.d("passedorderBY#->",orderBy);
         Log.d("passedorderID# ->",orderidvm);
         Log.d("passedloginId#->",loginidvm);
         Log.d("passedschoolid# ->",schoolIdvm);
@@ -714,15 +806,27 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
 
     private void placeordercall() {
         showHideProgressDialog(true);
+
         Log.d("Place order", "Called");
         login_id = UserPreference.getInstance(this).getLoginId();
-        school_id = selectschoolid;
+        school_id = UserPreference.getInstance(mBaseAppCompatActivity).getselectedSchoolid();
         pattern_id = selectpatternid;
         total_amount = String.valueOf(totalrate);
         deposite = edtadvdeposit.getText().toString();
         formNumber = edFormNumber.getText().toString();
+        passedDate = sharedPreferenceUtils.getString("date","n");
+        orderBy = edorderBy.getText().toString();
         for (int i =0; i<std.size();i++)
         Log.d("PLACED -> ","std"+std.get(i));
+
+        System.out.println(login_id);
+        System.out.println(school_id);
+        System.out.println(pattern_id);
+        System.out.println(total_amount);
+        System.out.println(formNumber);
+        System.out.println(passedDate);
+        System.out.println(orderBy);
+
         LinkedHashMap<String, RequestBody> addPostRequest = new LinkedHashMap<String, RequestBody>();
         addPostRequest.put("login_id", RequestBody.create(MediaType.parse("multipart/form-data"), login_id));
         addPostRequest.put("school_id", RequestBody.create(MediaType.parse("multipart/form-data"), school_id));
@@ -733,11 +837,15 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         addPostRequest.put("total_amount", RequestBody.create(MediaType.parse("multipart/form-data"), total_amount));
         addPostRequest.put("deposite", RequestBody.create(MediaType.parse("multipart/form-data"), deposite));
         addPostRequest.put("form_number",RequestBody.create(MediaType.parse("multipart/form-data"),formNumber));
+        addPostRequest.put("add_date_on",RequestBody.create(MediaType.parse("multipart/form-data"),passedDate));
+        addPostRequest.put("order_by",RequestBody.create(MediaType.parse("multipart/form-data"),orderBy));
+        System.out.println("Passed"+ passedDate);
         APIInterface apiInterface = APIClient.getClient(this).create(APIInterface.class);
         Call<Schoollistmodel> addorder = apiInterface.addorder(addPostRequest, std, boys, girls);
         addorder.enqueue(new Callback<Schoollistmodel>() {
             @Override
             public void onResponse(Call<Schoollistmodel> call, Response<Schoollistmodel> response) {
+                System.out.println("RESPONSE ->"+response.raw());
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         Log.d("loggg", "loggg");
@@ -748,8 +856,6 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                             Constants.cartlist.clear();
                             Constants.editcardList.clear();
                             myEdit.clear();
-                            myEdit.commit();
-                            myEdit.apply();
                             UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchool(String.valueOf(" "));
                             UserPreference.getInstance(mBaseAppCompatActivity).setselectedpattern(String.valueOf(" "));
                             UserPreference.getInstance(mBaseAppCompatActivity).setselectedpatternid(String.valueOf(" "));
@@ -785,31 +891,6 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
             }
         });
     }
-
-    private void setbottomview(String spinner) {
-        UserPreference.getInstance(this).setschoolspinner(spinner);
-        Log.d("logg1", "bt");
-
-        final CommonListBottomSheet loBottomNavigationView = CommonListBottomSheet.newInstance();
-        loBottomNavigationView.addListener(Quickorderforrm.this, new CommonListBottomSheet.DailogListener() {
-            @Override
-            public void onItemClick(String mPosition, String actionType, String s) {
-                Log.d("loggg", mPosition);
-                switch (actionType) {
-                    case "schoolspinner":
-                        edtschoolname.setText(s);
-                        selectschoolid = mPosition;
-                        break;
-                    case "patternspinner":
-                        edtpatternname.setText(s);
-                        selectpatternid = mPosition;
-                        break;
-                }
-            }
-        });
-        loBottomNavigationView.show(getSupportFragmentManager(), "");
-    }
-
     @Override
     public void onItemSelected2(int alltotal, int stdd1tto4, int std5to8) {
         txttotalstdent.setText("TOTAL STUDENTS " + alltotal);
@@ -831,8 +912,6 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
 
     @Override
     public void updatedWhenDelete(String standard, String total_boys_girls) {
-         //  int  indexOf = std.indexOf(Integer.valueOf(standard));
-
             try {
                 std.remove(Integer.valueOf(standard));
             //    stdId.remove(indexOf);
@@ -906,15 +985,17 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                                 ///  handle quick order  as intent is null //
                                 if (intent != null && !intent.getString("SchoolName", "Q").equals("Q") || parcebelCheck.hasExtra("EditData")) {
                                     if (intent != null && intent.getString("isEdit").equals("order")) {
-
                                         //// removing the adapter  ///
                                         // value is from orderAdapter
                                     }
                                 } else {
-                                    Countryadapter customAdapter = new Countryadapter(Quickorderforrm.this, R.layout.spinnerlayout, mListData);
-                                    if (schoollspinner != null) {
-                                        schoollspinner.setAdapter(customAdapter);
+                                    // adding the adapter to the autocomplete text view //
+                                   ArrayList<String> arrayList= new ArrayList<String>();
+                                    for (int i=0; i<mListData.size(); i++){
+                                        arrayList.add(i,mListData.get(i).getName());
                                     }
+                                        ArrayAdapter arrayAdapter = new ArrayAdapter(mBaseAppCompatActivity,android.R.layout.simple_list_item_1,arrayList);
+                                        autoCompleteTextView.setAdapter(arrayAdapter);
                                 }
                             }
                         } else {
@@ -968,12 +1049,15 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
                                             || parcebelCheck.hasExtra("EditData")) {
                                         if (intent != null && intent.getString("isEdit").equals("order")) {
                                             df = intent.getString("PatternName", "n");
+                                             patternspinner.setAdapter(customAdapter);
                                             patterntxt.setText(df);
-                                            Log.d("Pattern->>>>", intent.getString("PatternName"));
+                                            Log.d("Pattern1212->>>>", intent.getString("PatternName"));
                                         }
                                     } else {
-
+                                        System.out.println("Pattern -> ELSE ");
                                         patternspinner.setAdapter(customAdapter);
+                                        patterntxt.setText(df);
+
                                     }
 
                                 }
@@ -1015,5 +1099,77 @@ public class Quickorderforrm extends BaseAppCompatActivity implements Addstdadap
         UserPreference.getInstance(mBaseAppCompatActivity).setselectedpatternid("");
         Constants.editcardList.clear();
         Constants.editcartlist.clear();
+    }
+
+   void handleSelectDate(){
+        textViewDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mYear = c.get(Calendar.YEAR);
+                               mMonth = c.get(Calendar.MONTH);
+                                mDay = c.get(Calendar.DAY_OF_MONTH);
+                                DatePickerDialog dpd = new DatePickerDialog(Quickorderforrm.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                   public void onDateSet(DatePicker view, int year,
+                                         int monthOfYear, int dayOfMonth) {
+                                               textViewDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                               String dateDis = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                               myEdit.putString("displayDate",dateDis);
+                                                c.set(year, monthOfYear, dayOfMonth);
+                                                passedDate = String.valueOf(year) + "-" + String.valueOf(monthOfYear + 1) + "-" + String.valueOf(dayOfMonth);
+                                                myEdit.putString("date",passedDate.toString());
+                                                myEdit.commit();
+                        System.out.println("Passed Date "+passedDate);
+                                            }
+                }, mYear, mMonth, mDay);
+                               //dpd.getDatePicker().setMaxDate(System.currentTimeMillis());
+                                       dpd.show();
+            }
+        });
+         }
+
+         void  updateTheSchoolListOutsideTheResponseThread(List<DataItem> dataItemList){
+             int index = 0;
+             String schoolName = sharedPreferenceUtils.getString("school","");
+             for (int x =0; x<dataItemList.size();x++){
+                 System.out.println("ITEMS are 1->"+mListData.get(x).getName());
+                 if (mListData.get(x).getName().equals(schoolName)){
+                     index =x;
+                     System.out.println("school found at ->"+x);
+                     autoCompleteTextView.setText(schoolName);
+                     UserPreference.getInstance(mBaseAppCompatActivity).setselectedSchoolid(String.valueOf(index));
+                     break;
+                 }
+             }
+
+
+
+         }
+
+
+
+
+    private void setbottomview(String spinner) {
+        UserPreference.getInstance(this).setschoolspinner(spinner);
+        Log.d("logg1", "bt");
+
+        final CommonListBottomSheet loBottomNavigationView = CommonListBottomSheet.newInstance();
+        loBottomNavigationView.addListener(Quickorderforrm.this, new CommonListBottomSheet.DailogListener() {
+            @Override
+            public void onItemClick(String mPosition, String actionType, String s) {
+                Log.d("loggg", mPosition);
+                switch (actionType) {
+                    case "schoolspinner":
+                        edtschoolname.setText(s);
+                        selectschoolid = mPosition;
+                        break;
+                    case "patternspinner":
+                        edtpatternname.setText(s);
+                        selectpatternid = mPosition;
+                        break;
+                }
+            }
+        });
+        loBottomNavigationView.show(getSupportFragmentManager(), "");
     }
 }

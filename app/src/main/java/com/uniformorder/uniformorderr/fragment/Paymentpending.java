@@ -151,7 +151,7 @@ public class Paymentpending extends BaseFragment implements OnItemClicked {
         showHideProgressDialog(true);
 
         APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
-        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "payment_pending", strsearch);
+        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "payment_pending", strsearch,"");
         userlist.enqueue(new Callback<ResponseOrderList>() {
             @Override
             public void onResponse(Call<ResponseOrderList> call, Response<ResponseOrderList> response) {

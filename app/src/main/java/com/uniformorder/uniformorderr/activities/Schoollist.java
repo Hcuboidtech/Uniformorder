@@ -42,11 +42,12 @@ public class Schoollist extends BaseAppCompatActivity implements Schoollistadapt
     SwipeRefreshLayout swipeRefreshViewPropertyList;
     Schoollistadapter profilelistadapter;
     List<DataItem> schoollistdetails = new ArrayList<>();
-    private int listLimite = 20;
+    private int listLimite = 10;
     private boolean isLastPage = false;
     private boolean isLoading = false;
     public static boolean isClickBack = true;
     String loginid, search_value = " ";
+    int offsetLimit = 0;
     EditText edtschoolsearch;
 
     @Override
@@ -156,7 +157,7 @@ public class Schoollist extends BaseAppCompatActivity implements Schoollistadapt
     }
 
     private void loadNextPage() {
-        listLimite += 10;
+        listLimite += 2;
         isLoading = false;
         schoolllist(search_value);
     }
@@ -293,7 +294,7 @@ public class Schoollist extends BaseAppCompatActivity implements Schoollistadapt
 
     @Override
     public void onRefresh() {
-        listLimite = 20;
+        listLimite = listLimite+10;
         schoolllist(search_value);
     }
 

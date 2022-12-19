@@ -7,7 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.uniformorder.uniformorderr.activities.Changepassword;
 import com.uniformorder.uniformorderr.activities.OnItemClicked;
 import com.uniformorder.uniformorderr.activities.UserPreference;
 import com.uniformorder.uniformorderr.adapter.Orderadapter;
+import com.uniformorder.uniformorderr.adapter.PaginationScrollListener;
 import com.uniformorder.uniformorderr.model.DeleteOrder;
 import com.uniformorder.uniformorderr.model.Orderlistdetails;
 import com.uniformorder.uniformorderr.model.Orderlistmodel;
@@ -50,6 +53,7 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    SwipeRefreshLayout swipeRefreshViewPropertyList;
 
     Orderadapter profilelistadapter;
     List<DataItem> schoollistdetails = new ArrayList<>();
@@ -58,6 +62,11 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
     String loginid;
     String strsearch = " ";
     EditText edtsearch;
+
+
+    int limit = 4;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
 
 
     // TODO: Rename and change types of parameters
@@ -114,7 +123,6 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
         edtsearch = view.findViewById(R.id.edtsearch);
         // Inflate the layout for this fragment
 
-
         edtsearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -138,6 +146,45 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
         orderlist(strsearch);
 
 
+        recylceorderlist.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
+            @Override
+            protected void loadMoreItems(RecyclerView recyclerView, int dx, int dy) {
+                if (!recyclerView.canScrollVertically(-1)) {
+//                    LogUtils.LOGE(TAG, "onScrolledToTop()");
+                    //showProgressBar(false)
+                  showHideProgressDialog(false);
+                } else if (!recyclerView.canScrollVertically(1)) {
+                    //hide progress bottom view
+                    if (!isLastPage) {
+                        isLoading = true;
+                        new Handler().postDelayed(() -> loadNextPage(), 1000);
+                    }
+                }
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return  schoollistdetails.size();
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return false;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return false;
+            }
+        });
+
+    }
+
+    void loadNextPage() {
+        limit += 10;
+        isLoading = false;
+//        showHideProgressDialog(true);
+        orderlist("");
     }
 
     @Override
@@ -152,11 +199,12 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
         showHideProgressDialog(true);
 
         APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
-        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "pending", strsearch);
+        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "pending", strsearch,String.valueOf(limit));
         userlist.enqueue(new Callback<ResponseOrderList>() {
             @Override
             public void onResponse(Call<ResponseOrderList> call, Response<ResponseOrderList> response) {
 
+                showHideProgressDialog(false);
                 UserPreference.getInstance(getContext()).setpayment_pending("pending");
                 //   hideSwipeRefreshView();
                 if (response.isSuccessful()) {
@@ -178,14 +226,17 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
                                 //list
                                 if (schoollistdetails != null) {
                                     if (schoollistdetails.size() == response.body().getData().size()) {
-                                        //                     isLastPage = true;
+                                        //
+                                                            isLastPage = true;
                                     }
                                     schoollistdetails.clear();
                                 }
                                 schoollistdetails.addAll(response.body().getData());
                                 profilelistadapter.addData(schoollistdetails);
+                              showHideProgressDialog(false);
                             }
                         } else {
+                                isLastPage = true;
                             showHideProgressDialog(false);
                             recylceorderlist.setVisibility(View.GONE);
                             UserPreference.getInstance(getContext()).setpayment_pending("pending");
@@ -214,6 +265,7 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
             @Override
             public void onFailure(Call<ResponseOrderList> call, Throwable t) {
                 //  isLastPage = true;
+                isLastPage = true;
                 hideProgressDialog();
                 //hideSwipeRefreshView();
             }
@@ -252,4 +304,5 @@ public class Pendingorder extends BaseFragment implements OnItemClicked {
            });
 
           }
-    }
+
+}

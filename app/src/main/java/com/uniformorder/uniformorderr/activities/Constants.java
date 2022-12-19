@@ -12,6 +12,13 @@ public class Constants {
     public static final String CHANNEL_NAME = "Simplified Coding Notification";
     public static final String CHANNEL_DESCRIPTION = "www.simplifiedcoding.net";
 
+     //   edit order  //
+    public static String ORDER_ID ="ORDER_ID";
+    public static String PATTERN_NAME ="PATTERN_NAME";
+    public static String FORM_NUMBER ="FORM_NUMBER";
+    public static String ORDER_DATE = "ORDER_DATE";
+    public static String ORDER_BY ="ORDER_BY";
+
     /* Font List*/
     public static final int requestSinglechat = 0;
     public static String val_firstname = "Please Enter FirstName";
@@ -115,6 +122,7 @@ public class Constants {
     public static ArrayList<SaveorderRequestdetails>  editcardList = new ArrayList<>();
    public static ArrayList<Editorder> editcartlist = new ArrayList<>();
 
+   public static String orderDate ="ORDER_DATE";
 
 
 
@@ -334,5 +342,40 @@ public class Constants {
     public static final String Pref_UserPassword = "userpassword";
     public static final String Pref_GCMToken = "gcmtoken";
     public static final String Pref_IsRegistedToQuickbloxforPush = "isregistedtoquickbloxpush";
+
+    //////////     DISTRICT VALUES USED FOR THE ADD SCHOOL DISTRICT SELECT   ///
+    public static final String[] districtList = {
+            "Ahmedabad",
+            "Vadodara",
+            "Anand" ,
+            "Chhota Udaipur",
+            "Dahod" ,
+            "Kheda" ,
+            "Mahisagar" ,
+            "Panchmahal" ,
+            "Gandhinagar",
+            "Aravalli" ,
+            "Banaskantha",
+            "Mehsana",
+            "Patan" ,
+            "Sabarkantha",
+            "Rajkot" ,
+            "Amreli",
+            "Bhavnagar",
+            "Botad" ,
+            "Devbhoomi Dwarka",
+            "Gir Somnath",
+            "Jamnagar" ,
+            "Junagadh",
+            "Morbi" ,
+            "Porbandar" ,
+            "Surendranagar",
+            "Kachchh" ,
+            "Surat" ,
+            "Bharuch",
+            "Dang" ,
+            "Narmada",
+            "Navsari",
+            "Tapi"};
 
 }

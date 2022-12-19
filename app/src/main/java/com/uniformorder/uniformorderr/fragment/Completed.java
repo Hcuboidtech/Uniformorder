@@ -143,7 +143,7 @@ public class Completed extends BaseFragment implements OnItemClicked {
         showHideProgressDialog(true);
 
         APIInterface apiInterface = APIClient.getClient(getContext()).create(APIInterface.class);
-        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "completed", strsearch);
+        Call<ResponseOrderList> userlist = apiInterface.orderlist(loginid, "completed", strsearch,"");
         userlist.enqueue(new Callback<ResponseOrderList>() {
             @Override
             public void onResponse(Call<ResponseOrderList> call, Response<ResponseOrderList> response) {

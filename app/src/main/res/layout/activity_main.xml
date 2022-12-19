@@ -48,6 +48,19 @@
                     android:textColor="@color/darkblue"
                     android:textSize="@dimen/_15sdp" />
 
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:src="@drawable/logout"
+                    android:visibility="invisible">
+
+                </ImageView>
+
                 </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
@@ -204,7 +217,7 @@
 
                 <LinearLayout
                     android:id="@+id/addmember"
-                    android:layout_weight="1"
+                    android:layout_weight="0.95"
                     android:orientation="vertical"
                     android:background="@drawable/mainborder"
                     android:layout_margin="@dimen/_10sdp"
@@ -231,32 +244,32 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_margin="@dimen/_10sdp"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/mainborder"
-                    android:padding="@dimen/_10sdp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
+<!--                <LinearLayout-->
+<!--                    android:layout_margin="@dimen/_10sdp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:background="@drawable/mainborder"-->
+<!--                    android:padding="@dimen/_10sdp"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content">-->
 
-                    <ImageView
-                        android:src="@drawable/iccontentpaste24px"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_30sdp"/>
+<!--                    <ImageView-->
+<!--                        android:src="@drawable/iccontentpaste24px"-->
+<!--                        android:layout_width="@dimen/_40sdp"-->
+<!--                        android:layout_height="@dimen/_30sdp"/>-->
 
-                    <TextView
-                        android:text=" Reports"
-                        android:gravity="center"
-                        android:textColor="@color/darkblue"
-                        android:textStyle="bold"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+<!--                    <TextView-->
+<!--                        android:text=" Reports"-->
+<!--                        android:gravity="center"-->
+<!--                        android:textColor="@color/darkblue"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:layout_marginTop="@dimen/_10sdp"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"/>-->
 
 
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
 
             </LinearLayout>
@@ -267,11 +280,13 @@
 
 
         <LinearLayout
+             android:visibility="gone"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/txttitle"
             android:textColor="@color/darkblue"
             android:textStyle="bold"

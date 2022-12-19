@@ -108,15 +108,24 @@ public interface APIInterface {
                                   @Field("start_date") String start_date,
                                   @Field("end_date") String end_date,
                                   @Field("select_district")String select_district,
-                                  @Field("select_pay_center")String select_pay_center);
+                                  @Field("select_pay_center")String select_pay_center,
+                                  @Field("select_pattern")String pattern);
 
     @FormUrlEncoded
     @POST("order/excelexport")
     Call<filtermodel>excelExportAllPayCenter(@Field("login_id") String login_id,
                                   @Field("start_date") String start_date,
                                   @Field("end_date") String end_date,
-                                  @Field("select_district")String select_district
-                                   );
+                                  @Field("select_district")String select_district,
+                                  @Field("select_pattern")String pattern);
+
+    @FormUrlEncoded
+    @POST("order/excelexport")
+    Call<filtermodel>excelExportWithPattern(@Field("login_id") String login_id,
+                                             @Field("start_date") String start_date,
+                                             @Field("end_date") String end_date,
+                                             @Field("select_district")String select_district
+    );
 
     @FormUrlEncoded
     @POST("school/delete")
@@ -155,7 +164,8 @@ public interface APIInterface {
     @POST("order/list")
     Call<ResponseOrderList> orderlist(@Field("login_id") String login_id,
                                       @Field("type") String type,
-                                      @Field("search_value") String search_value);
+                                      @Field("search_value") String search_value,
+                                      @Field("limit")String limit);
 
     @FormUrlEncoded
     @POST("user/update")

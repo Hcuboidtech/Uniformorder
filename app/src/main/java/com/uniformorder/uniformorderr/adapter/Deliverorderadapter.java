@@ -202,7 +202,7 @@ public class Deliverorderadapter extends RecyclerView.Adapter<Deliverorderadapte
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            pendingamout = itemView.findViewById(R.id.pendingamout);
+//            pendingamout = itemView.findViewById(R.id.pendingamout);
             simpleTextView = itemView.findViewById(R.id.simpleTextView);
             simpleTextView1 = itemView.findViewById(R.id.simpleTextView1);
             simpleTextView3 = itemView.findViewById(R.id.simpleTextView3);

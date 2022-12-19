@@ -30,10 +30,6 @@ public class Schoollistadapter  extends RecyclerView.Adapter<Schoollistadapter.V
         this.context = loContext;
     }
 
-
-
-
-
     @NonNull
     @Override
     public Schoollistadapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uniformorder.uniformorderr.R;
@@ -28,6 +29,7 @@ public class Addpattern extends BaseAppCompatActivity {
     EditText edtpatternname;
     String loginid, patternid;
     Button btnaddpattern;
+    TextView addNewPatternTextView;
 
     @Override
     public String getActionTitle() {
@@ -49,6 +51,7 @@ public class Addpattern extends BaseAppCompatActivity {
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_addpattern);
         img_back = findViewById(R.id.img_back);
+        addNewPatternTextView = findViewById(R.id.addPatternTextView);
         edtpatternname = findViewById(R.id.edtpatternname);
         btnaddpattern = findViewById(R.id.btnaddpattern);
         loginid = UserPreference.getInstance(mBaseAppCompatActivity).getLoginId();
@@ -74,6 +77,8 @@ public class Addpattern extends BaseAppCompatActivity {
         });
         if (patternid == null) {
         } else {
+            addNewPatternTextView.setText("Update Pattern");
+            btnaddpattern.setText("Update");
             editpattern(patternid);
         }
     }

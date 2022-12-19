@@ -1426,6 +1426,14 @@ public class UserPreference {
         return helperPreference.getStringValue(Constants.USER_PREFERENCES.edufilter, "");
     }
 
+    public String getFormNumber(){
+        return helperPreference.getStringValue(Constants.FORM_NUMBER,"");
+    }
+
+    public void setFormNumber(String formNumber){
+        helperPreference.setValue(Constants.FORM_NUMBER,formNumber);
+    }
+
     //clear data of profile
     public void profileDataClear() {
         setFormgotra("");

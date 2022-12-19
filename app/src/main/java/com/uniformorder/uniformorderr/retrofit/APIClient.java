@@ -22,7 +22,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIClient {
     private static Retrofit retrofit = null;
 
-    private static final String BASE_URL="http://hcuboidtech.com/godavari/public/api/v1/";
+    // BASE_URL="http://hcuboidtech.com/godavari/public/api/v1/"; // old
+    private static final String BASE_URL="https://www.hcuboidtech.com/godavari/public/api/v1/";
     private Context context;
 
 

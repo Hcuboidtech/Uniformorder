@@ -24,11 +24,13 @@ public class Splashsrceen extends AppCompatActivity {
             public void run() {
 
                 if (UserPreference.getInstance(Splashsrceen.this).isUserLogin()) {
+                    System.out.println("IS USER LOGED IN -> "+UserPreference.getInstance(Splashsrceen.this).isUserLogin());
                     Intent mainIntent = new Intent(Splashsrceen.this, MainActivity.class);
                     startActivity(mainIntent);
                     finish();
                 }
                 else {
+                    System.out.println("Starting the Login Actiivyt");
                     Intent mainIntent = new Intent(Splashsrceen.this, LoginActivity.class);
                     startActivity(mainIntent);
                     finish();

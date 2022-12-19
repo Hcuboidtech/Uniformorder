@@ -75,6 +75,16 @@ public class DataItem implements Serializable {
 	@SerializedName("status")
 	private String status;
 
+	@SerializedName("add_date_on")
+	private String addOnDate;
+
+	@SerializedName("order_by")
+	private String orderBy;
+
+	public String getOrderBy(){
+		return orderBy;
+	}
+
 	public String getFormNumber(){
 		return formNumber;
 	}
@@ -165,5 +175,9 @@ public class DataItem implements Serializable {
 
 	public String getStatus(){
 		return status;
+	}
+
+	public String getAddOnDate(){
+		return addOnDate;
 	}
 }
